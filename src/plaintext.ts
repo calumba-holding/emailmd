@@ -46,6 +46,7 @@ export function toPlainText(html: string): string {
   // Convert links: <a href="url">text</a> → text (url)
   text = text.replace(/<a\s+[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, (_, url, label) => {
     if (label.trim() === url.trim()) return url;
+    if (url.startsWith('mailto:') && label.trim() === url.slice(7).trim()) return label.trim();
     return `${label} (${url})`;
   });
 
