@@ -27,6 +27,7 @@ export function buildHead(theme: Theme, preheader?: string): string {
       pre code { background-color: transparent; padding: 0; border-radius: 0; font-size: inherit; }
       ul, ol { margin: 0 0 8px 0; padding-left: 24px; }
       li { margin-bottom: 4px; }
+      .task-list-item { list-style-type: none; margin-left: -24px; }
       ul ul, ol ol, ul ol, ol ul { margin-top: 4px; margin-bottom: 0; }
     </mj-style>
     ${preheader ? `<mj-preview>${preheader}</mj-preview>` : ''}

@@ -92,6 +92,10 @@ export function toPlainText(html: string): string {
   // Strip all remaining HTML tags
   text = stripTags(text);
 
+  // Convert task list checkboxes to text markers
+  text = text.replace(/\u2610/g, '[ ]');
+  text = text.replace(/\u2611/g, '[x]');
+
   // Decode common HTML entities
   text = text.replace(/&amp;/g, '&');
   text = text.replace(/&lt;/g, '<');
@@ -172,7 +176,7 @@ function processListItems(html: string, listType: string, depth: number): string
   let result = '';
   let counter = 0;
 
-  const liOpenRe = /<li>/gi;
+  const liOpenRe = /<li[^>]*>/gi;
   let liMatch: RegExpExecArray | null;
 
   while ((liMatch = liOpenRe.exec(html)) !== null) {

@@ -172,6 +172,16 @@ Images mixed with text in a paragraph are rendered inline:
 Feature one with icon ![check](https://example.com/check.png) included.
 ```
 
+## Task Lists
+
+```markdown
+- [x] Design mockups
+- [x] Write API endpoints
+- [ ] Deploy to production
+```
+
+Checked items render with ☑ and unchecked with ☐. In the plain text output, they use `[x]` and `[ ]`.
+
 ## Tables
 
 Standard GFM (GitHub Flavored Markdown) tables are supported and rendered as styled, email-safe HTML tables:
@@ -195,6 +205,16 @@ Control column alignment using colons in the separator row:
 ```
 
 Tables are automatically styled with theme colors — header rows are bold with a bottom border, and body rows have subtle separators.
+
+## Autolinks
+
+Bare URLs are automatically linked without needing angle brackets or markdown link syntax:
+
+```markdown
+Check out https://example.com for details.
+```
+
+Angle bracket autolinks also work: `<https://example.com>` and `<user@example.com>`.
 
 ## Inline HTML
 
