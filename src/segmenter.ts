@@ -9,7 +9,7 @@ import {
   MARKER_FOOTER_CLOSE,
 } from './constants.js';
 
-export type SegmentType = 'text' | 'callout' | 'centered' | 'highlight' | 'footer' | 'button' | 'image' | 'hr';
+export type SegmentType = 'text' | 'callout' | 'centered' | 'highlight' | 'footer' | 'button' | 'image' | 'hr' | 'table';
 
 export interface Segment {
   type: SegmentType;
@@ -241,10 +241,37 @@ function splitOnHr(segments: Segment[]): Segment[] {
   return result;
 }
 
+const TABLE_RE = /<table>[\s\S]*?<\/table>/;
+
+function splitOnTables(segments: Segment[]): Segment[] {
+  const result: Segment[] = [];
+  for (const seg of segments) {
+    if (seg.type !== 'text') {
+      result.push(seg);
+      continue;
+    }
+    let text = seg.content;
+    let match: RegExpExecArray | null;
+    while ((match = TABLE_RE.exec(text)) !== null) {
+      const before = text.slice(0, match.index);
+      if (before.trim()) {
+        result.push({ type: 'text', content: before });
+      }
+      result.push({ type: 'table', content: match[0] });
+      text = text.slice(match.index + match[0].length);
+    }
+    if (text.trim()) {
+      result.push({ type: 'text', content: text });
+    }
+  }
+  return result;
+}
+
 export function segment(html: string): Segment[] {
   const { html: htmlWithPlaceholders, buttons } = extractButtons(html);
   const segments = splitOnDirectives(htmlWithPlaceholders);
   const withButtons = splitOnButtonPlaceholders(segments, buttons);
   const withImages = splitOnImages(withButtons);
-  return splitOnHr(withImages);
+  const withTables = splitOnTables(withImages);
+  return splitOnHr(withTables);
 }

@@ -134,6 +134,41 @@ function renderImageSegment(segment: Segment, theme: Theme): string {
     </mj-section>`;
 }
 
+function renderTableSegment(segment: Segment, theme: Theme): string {
+  let tableHtml = segment.content;
+
+  // Strip wrapper tags — mj-table only accepts <tr> rows directly
+  tableHtml = tableHtml
+    .replace(/<\/?table>/g, '')
+    .replace(/<\/?thead>/g, '')
+    .replace(/<\/?tbody>/g, '')
+    .trim();
+
+  // Add inline styles to <th> elements, preserving existing text-align
+  tableHtml = tableHtml.replace(
+    /<th(\s+style="([^"]*)")?>/g,
+    (_, _styleAttr, existingStyle) => {
+      const base = existingStyle ? `${existingStyle};` : '';
+      return `<th style="${base}font-weight:700;border-bottom:2px solid ${theme.cardColor};padding:8px 12px">`;
+    },
+  );
+
+  // Add inline styles to <td> elements, preserving existing text-align
+  tableHtml = tableHtml.replace(
+    /<td(\s+style="([^"]*)")?>/g,
+    (_, _styleAttr, existingStyle) => {
+      const base = existingStyle ? `${existingStyle};` : '';
+      return `<td style="${base}border-bottom:1px solid ${theme.cardColor};padding:8px 12px">`;
+    },
+  );
+
+  return `<mj-section background-color="${theme.contentColor}" padding="8px 32px">
+      <mj-column>
+        <mj-table color="${theme.bodyColor}" font-family="${theme.fontFamily}" font-size="${theme.fontSize}" line-height="${theme.lineHeight}" cellpadding="0" cellspacing="0" width="100%">${tableHtml}</mj-table>
+      </mj-column>
+    </mj-section>`;
+}
+
 function segmentToMjml(segment: Segment, theme: Theme): string {
   switch (segment.type) {
     case 'text':
@@ -152,6 +187,8 @@ function segmentToMjml(segment: Segment, theme: Theme): string {
       return renderButtonSegment(segment, theme);
     case 'image':
       return renderImageSegment(segment, theme);
+    case 'table':
+      return renderTableSegment(segment, theme);
   }
 }
 

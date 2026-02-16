@@ -82,6 +82,9 @@ export function toPlainText(html: string): string {
     return '`' + content + '`';
   });
 
+  // Convert tables to aligned text
+  text = convertTables(text);
+
   // Convert paragraphs to double newlines
   text = text.replace(/<\/p>/gi, '\n\n');
   text = text.replace(/<p[^>]*>/gi, '');
@@ -206,6 +209,48 @@ function processListItems(html: string, listType: string, depth: number): string
   }
 
   return result;
+}
+
+function convertTables(html: string): string {
+  const tableRe = /<table>[\s\S]*?<\/table>/gi;
+  return html.replace(tableRe, (tableHtml) => {
+    const rows: string[][] = [];
+    const rowRe = /<tr>([\s\S]*?)<\/tr>/gi;
+    let rowMatch: RegExpExecArray | null;
+
+    while ((rowMatch = rowRe.exec(tableHtml)) !== null) {
+      const cells: string[] = [];
+      const cellRe = /<(?:th|td)[^>]*>([\s\S]*?)<\/(?:th|td)>/gi;
+      let cellMatch: RegExpExecArray | null;
+      while ((cellMatch = cellRe.exec(rowMatch[1])) !== null) {
+        cells.push(stripTags(cellMatch[1]).trim());
+      }
+      if (cells.length > 0) rows.push(cells);
+    }
+
+    if (rows.length === 0) return '';
+
+    // Calculate column widths
+    const colCount = Math.max(...rows.map((r) => r.length));
+    const colWidths: number[] = [];
+    for (let c = 0; c < colCount; c++) {
+      colWidths[c] = Math.max(...rows.map((r) => (r[c] || '').length));
+    }
+
+    // Format rows with padding
+    const lines = rows.map((row) => {
+      const cells = row.map((cell, c) => cell.padEnd(colWidths[c]));
+      return cells.join('   ');
+    });
+
+    // Insert separator after header row
+    if (lines.length > 1) {
+      const separator = colWidths.map((w) => '-'.repeat(w)).join('   ');
+      lines.splice(1, 0, separator);
+    }
+
+    return '\n' + lines.join('\n') + '\n';
+  });
 }
 
 function stripTags(html: string): string {

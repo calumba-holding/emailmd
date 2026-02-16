@@ -172,6 +172,30 @@ Images mixed with text in a paragraph are rendered inline:
 Feature one with icon ![check](https://example.com/check.png) included.
 ```
 
+## Tables
+
+Standard GFM (GitHub Flavored Markdown) tables are supported and rendered as styled, email-safe HTML tables:
+
+```markdown
+| Name  | Role       | Status |
+| ----- | ---------- | ------ |
+| Alice | Engineer   | Active |
+| Bob   | Designer   | Active |
+| Carol | Manager    | Away   |
+```
+
+### Column Alignment
+
+Control column alignment using colons in the separator row:
+
+```markdown
+| Left   | Center | Right |
+| :----- | :----: | ----: |
+| left   | center | right |
+```
+
+Tables are automatically styled with theme colors — header rows are bold with a bottom border, and body rows have subtle separators.
+
 ## Wrappers
 
 Control the email's outer structure:
