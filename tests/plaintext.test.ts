@@ -74,6 +74,23 @@ describe('plain text output', () => {
     expect(text).toContain('> This is a quote');
   });
 
+  it('converts multi-line blockquotes', () => {
+    const { text } = render('> Line one\n> Line two');
+    expect(text).toContain('> Line one');
+    expect(text).toContain('> Line two');
+  });
+
+  it('converts nested blockquotes with double prefix', () => {
+    const { text } = render('> Outer\n>\n> > Inner');
+    expect(text).toContain('> Outer');
+    expect(text).toMatch(/> > Inner/);
+  });
+
+  it('does not leave dangling blockquote tags for nested quotes', () => {
+    const { text } = render('> Outer\n>\n> > Inner');
+    expect(text).not.toMatch(/<[^>]+>/);
+  });
+
   it('converts horizontal rules', () => {
     const { text } = render('Above\n\n***\n\nBelow');
     expect(text).toContain('---');

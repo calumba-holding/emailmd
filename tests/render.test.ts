@@ -97,6 +97,24 @@ Hello`;
     expect(html).toContain('const x: number = 1;');
   });
 
+  it('renders a blockquote with left border styling', () => {
+    const { html } = render('> This is a quote');
+    expect(html).toContain('border-left');
+    expect(html).toContain('This is a quote');
+  });
+
+  it('renders blockquote text using theme body color, not hardcoded gray', () => {
+    const { html } = render('> Quote text');
+    expect(html).not.toContain('#6b7280');
+  });
+
+  it('renders nested blockquotes', () => {
+    const { html } = render('> Outer\n>\n> > Inner');
+    expect(html).toContain('Outer');
+    expect(html).toContain('Inner');
+    expect(html).toMatch(/blockquote.*blockquote/s);
+  });
+
   it('returns extracted frontmatter in meta', () => {
     const md = `---
 preheader: Preview

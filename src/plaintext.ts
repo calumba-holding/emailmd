@@ -65,11 +65,16 @@ export function toPlainText(html: string): string {
   text = text.replace(/<br\s*\/?>/gi, '\n');
   text = text.replace(/<hr\s*\/?>/gi, '\n---\n');
 
-  // Convert blockquotes
-  text = text.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, content) => {
-    const lines = stripTags(content).trim().split('\n');
-    return lines.map((l: string) => `> ${l.trim()}`).join('\n') + '\n';
-  });
+  // Convert blockquotes (inside-out to handle nesting)
+  while (/<blockquote/i.test(text)) {
+    text = text.replace(
+      /<blockquote[^>]*>((?:(?!<blockquote)[\s\S])*?)<\/blockquote>/gi,
+      (_, content) => {
+        const lines = stripTags(content).trim().split('\n');
+        return lines.map((l: string) => `> ${l.trim()}`).join('\n') + '\n';
+      },
+    );
+  }
 
   // Convert code blocks: <pre><code>...</code></pre> → indented content
   text = text.replace(/<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>/gi, (_, content) => {
