@@ -21,7 +21,7 @@ describe('render', () => {
 
   it('applies theme defaults when no theme is passed', () => {
     const { html } = render('Hello');
-    expect(html).toContain('#374151'); // default bodyColor
+    expect(html).toContain('#a1a1aa'); // default bodyColor
   });
 
   it('renders with frontmatter overrides', () => {

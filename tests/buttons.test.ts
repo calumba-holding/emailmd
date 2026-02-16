@@ -8,7 +8,7 @@ describe('button syntax', () => {
     expect(html).toContain('https://example.com');
     expect(html).toContain('Get Started');
     // Should have buttonColor as background
-    expect(html).toContain('#5B4FE9'); // default buttonColor
+    expect(html).toContain('#fafafa'); // default buttonColor
   });
 
   it('renders {button.secondary} with border styling', () => {
