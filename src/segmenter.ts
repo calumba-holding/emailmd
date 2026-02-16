@@ -5,11 +5,13 @@ import {
   MARKER_CENTERED_CLOSE,
   MARKER_HIGHLIGHT_OPEN,
   MARKER_HIGHLIGHT_CLOSE,
+  MARKER_HEADER_OPEN,
+  MARKER_HEADER_CLOSE,
   MARKER_FOOTER_OPEN,
   MARKER_FOOTER_CLOSE,
 } from './constants.js';
 
-export type SegmentType = 'text' | 'callout' | 'centered' | 'highlight' | 'footer' | 'button' | 'image' | 'hr' | 'table';
+export type SegmentType = 'text' | 'callout' | 'centered' | 'highlight' | 'header' | 'footer' | 'button' | 'image' | 'hr' | 'table';
 
 export interface Segment {
   type: SegmentType;
@@ -21,6 +23,7 @@ const DIRECTIVE_PAIRS: Array<{ open: string; close: string; type: SegmentType }>
   { open: MARKER_CALLOUT_OPEN, close: MARKER_CALLOUT_CLOSE, type: 'callout' },
   { open: MARKER_CENTERED_OPEN, close: MARKER_CENTERED_CLOSE, type: 'centered' },
   { open: MARKER_HIGHLIGHT_OPEN, close: MARKER_HIGHLIGHT_CLOSE, type: 'highlight' },
+  { open: MARKER_HEADER_OPEN, close: MARKER_HEADER_CLOSE, type: 'header' },
   { open: MARKER_FOOTER_OPEN, close: MARKER_FOOTER_CLOSE, type: 'footer' },
 ];
 

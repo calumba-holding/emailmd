@@ -3,6 +3,10 @@ preheader: "Introducing Acme 2.0 — faster, smarter, better"
 button_color: "#059669"
 ---
 
+::: header
+![Acme](https://placehold.co/150x50/059669/ffffff?text=Acme+2.0){width="150"}
+:::
+
 # Acme 2.0 Is Here
 
 We've rebuilt Acme from the ground up. Everything is faster, smarter, and more powerful.

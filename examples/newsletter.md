@@ -2,6 +2,10 @@
 preheader: "Your weekly digest from Acme — new features, tips, and more"
 ---
 
+::: header
+![Acme](https://placehold.co/150x50/5B4FE9/ffffff?text=Acme){width="150"}
+:::
+
 # Your Weekly Update
 
 Hi there! Here's what happened this week at Acme.

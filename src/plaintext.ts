@@ -5,6 +5,8 @@ import {
   MARKER_CENTERED_CLOSE,
   MARKER_HIGHLIGHT_OPEN,
   MARKER_HIGHLIGHT_CLOSE,
+  MARKER_HEADER_OPEN,
+  MARKER_HEADER_CLOSE,
   MARKER_FOOTER_OPEN,
   MARKER_FOOTER_CLOSE,
 } from './constants.js';
@@ -23,6 +25,8 @@ export function toPlainText(html: string): string {
   text = text.replace(new RegExp(escapeRegExp(MARKER_CENTERED_CLOSE), 'g'), '');
   text = text.replace(new RegExp(escapeRegExp(MARKER_HIGHLIGHT_OPEN), 'g'), '');
   text = text.replace(new RegExp(escapeRegExp(MARKER_HIGHLIGHT_CLOSE), 'g'), '');
+  text = text.replace(new RegExp(escapeRegExp(MARKER_HEADER_OPEN), 'g'), '');
+  text = text.replace(new RegExp(escapeRegExp(MARKER_HEADER_CLOSE), 'g'), '');
   text = text.replace(new RegExp(escapeRegExp(MARKER_FOOTER_OPEN), 'g'), '');
   text = text.replace(new RegExp(escapeRegExp(MARKER_FOOTER_CLOSE), 'g'), '');
 

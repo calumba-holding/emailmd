@@ -82,6 +82,16 @@ Everything is 50% off this weekend.
 
 ## Directives
 
+### Header
+
+Content rendered above the main body area — typically used for a logo or brand image:
+
+```markdown
+::: header
+![Logo](https://example.com/logo.png){width="150"}
+:::
+```
+
 ### Callout
 
 ```markdown

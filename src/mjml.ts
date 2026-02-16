@@ -65,6 +65,14 @@ function renderHighlightSegment(content: string, theme: Theme): string {
     </mj-section>`;
 }
 
+function renderHeaderSegment(content: string, theme: Theme): string {
+  return `<mj-section padding="32px 32px 24px 32px">
+      <mj-column>
+        <mj-text align="center" font-size="13px" color="${theme.bodyColor}" line-height="1.5">${content}</mj-text>
+      </mj-column>
+    </mj-section>`;
+}
+
 function renderFooterSegment(content: string, theme: Theme): string {
   return `<mj-section padding="24px 32px 32px 32px">
       <mj-column>
@@ -179,6 +187,8 @@ function segmentToMjml(segment: Segment, theme: Theme): string {
       return renderCenteredSegment(segment.content, theme);
     case 'highlight':
       return renderHighlightSegment(segment.content, theme);
+    case 'header':
+      return renderHeaderSegment(segment.content, theme);
     case 'footer':
       return renderFooterSegment(segment.content, theme);
     case 'hr':
