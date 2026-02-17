@@ -1,8 +1,10 @@
 # Email.md
 
-Write markdown. Ship emails. No HTMHELL.
+### Write markdown. Ship emails. No HTMHELL.
 
 Email.md converts markdown into responsive, email-safe HTML that works across Gmail, Outlook, Apple Mail, Yahoo, and every other client.
+
+![Email.md](https://imgs.emailmd.dev/ss/github_splash.png)
 
 ## Install
 
