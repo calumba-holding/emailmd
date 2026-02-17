@@ -1,6 +1,8 @@
 "use client";
 
 import { CopyButton } from "./copy-button";
+import { ThemeModal } from "./theme-modal";
+import { SnippetsModal } from "./snippets-modal";
 
 interface EditorPaneProps {
   value: string;
@@ -14,7 +16,11 @@ export function EditorPane({ value, onChange }: EditorPaneProps) {
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           Markdown
         </span>
-        <CopyButton text={value} label="Markdown" />
+        <div className="flex items-center gap-1">
+          <SnippetsModal />
+          <ThemeModal markdown={value} onChange={onChange} />
+          <CopyButton text={value} label="Markdown" />
+        </div>
       </div>
       <textarea
         value={value}
