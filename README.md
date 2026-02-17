@@ -4,7 +4,7 @@
 
 Email.md converts markdown into responsive, email-safe HTML that works across Gmail, Outlook, Apple Mail, Yahoo, and every other client.
 
-![Email.md](https://imgs.emailmd.dev/ss/github_splash.png)
+![Email.md](https://imgs.emailmd.dev/ss/github_splash.png?1)
 
 ## Install
 
