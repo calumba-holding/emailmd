@@ -43,7 +43,27 @@ const { html } = render(markdown, {
 });
 ```
 
-All theme options:
+### Dark Mode
+
+A built-in dark theme is available. Pass it directly to flip all colors at once:
+
+```typescript
+import { render, darkTheme } from 'emailmd';
+
+const { html } = render(markdown, { theme: darkTheme });
+```
+
+Or use it as a base and override individual values:
+
+```typescript
+const { html } = render(markdown, {
+  theme: { ...darkTheme, brandColor: '#e11d48' },
+});
+```
+
+You can also activate it per-email via frontmatter — see [Frontmatter](#frontmatter).
+
+### All theme options
 
 | Key | Default | Description |
 |-----|---------|-------------|
@@ -79,6 +99,21 @@ Everything is 50% off this weekend.
 **Acme Corp** · [Unsubscribe](https://example.com/unsub)
 :::
 ```
+
+### Selecting a theme
+
+Use `theme` to switch the base theme for a single email. Individual overrides still layer on top:
+
+```markdown
+---
+theme: dark
+brand_color: "#e11d48"
+---
+
+# Dark email with a custom brand color
+```
+
+Valid values: `light` (default), `dark`.
 
 ## Directives
 

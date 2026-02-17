@@ -46,7 +46,14 @@ export const darkTheme: Theme = {
 
 export const defaultTheme: Theme = { ...lightTheme };
 
-export function mergeTheme(overrides?: Partial<Theme>): Theme {
-  if (!overrides) return { ...defaultTheme };
-  return { ...defaultTheme, ...overrides };
+export function resolveBaseTheme(name?: string): Theme {
+  if (name === 'dark') return darkTheme;
+  if (name === 'light') return lightTheme;
+  return defaultTheme;
+}
+
+export function mergeTheme(overrides?: Partial<Theme>, base?: Theme): Theme {
+  const b = base ?? defaultTheme;
+  if (!overrides) return { ...b };
+  return { ...b, ...overrides };
 }

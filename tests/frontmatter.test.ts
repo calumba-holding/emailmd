@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractFrontmatter, frontmatterToThemeOverrides } from '../src/index.js';
+import { extractFrontmatter, frontmatterToThemeOverrides, render, darkTheme } from '../src/index.js';
 
 describe('extractFrontmatter', () => {
   it('extracts frontmatter and content', () => {
@@ -51,5 +51,19 @@ describe('frontmatterToThemeOverrides', () => {
     const meta = { preheader: 'text', unknown_key: 'value' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides).toEqual({});
+  });
+});
+
+describe('theme frontmatter shortcut', () => {
+  it('applies dark theme via theme: dark in frontmatter', () => {
+    const { html } = render(`---\ntheme: dark\n---\n\n# Hello`);
+    expect(html).toContain(darkTheme.backgroundColor);
+    expect(html).toContain(darkTheme.contentColor);
+  });
+
+  it('allows individual overrides on top of theme: dark', () => {
+    const { html } = render(`---\ntheme: dark\nbrand_color: "#e11d48"\n---\n\n# Hello`);
+    expect(html).toContain(darkTheme.backgroundColor);
+    expect(html).toContain('#e11d48');
   });
 });
