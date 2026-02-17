@@ -3,6 +3,7 @@ export interface Template {
   title: string;
   category: string;
   author: string;
+  image?: string;
   markdown: string;
 }
 
@@ -11,7 +12,7 @@ export const templates: Template[] = [
     id: "welcome",
     title: "Welcome Email",
     category: "Onboarding",
-    author: "emailmd",
+    author: "Email.md",
     markdown: `---
 preheader: "Welcome aboard!"
 ---
@@ -48,13 +49,15 @@ Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Unsubscribe](https://example
     id: "password-reset",
     title: "Password Reset",
     category: "Security",
-    author: "emailmd",
+    author: "Email.md",
+    image: "https://imgs.emailmd.dev/ss/reset_password.png",
     markdown: `---
 preheader: "Reset your password"
+button_color: "#EA347D"
 ---
 
 ::: header
-![Logo](https://imgs.emailmd.dev/logoipsum-336.png){width="200"}
+![Logo](https://imgs.emailmd.dev/logoipsum-222.png){width="200"}
 :::
 
 # Reset Your Password
@@ -63,10 +66,12 @@ We received a request to reset the password for your account. Click the button b
 
 [Reset Password](https://example.com/reset?token=abc123){button}
 
-This link will expire in **1 hour**. If you didn't request a password reset, you can safely ignore this email.
+::: centered
+This link will expire in **1 hour**.
+:::
 
 ::: callout
-**Didn't request this?** If you didn't make this request, please [contact support](https://example.com/support) immediately.
+**Didn't request this?** If you didn't request a password reset, you can safely ignore this email.
 :::
 
 ::: footer
@@ -78,7 +83,7 @@ Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Unsubscribe](https://example
     id: "order-confirmation",
     title: "Order Confirmation",
     category: "E-Commerce",
-    author: "emailmd",
+    author: "Email.md",
     markdown: `---
 preheader: "Your order has been confirmed"
 ---
@@ -116,7 +121,7 @@ Acme Store | 456 Commerce Blvd | [Unsubscribe](https://example.com/unsub)
     id: "newsletter",
     title: "Monthly Newsletter",
     category: "Marketing",
-    author: "emailmd",
+    author: "Email.md",
     markdown: `---
 preheader: "What's new this month"
 ---
@@ -152,7 +157,7 @@ Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Manage preferences](https://
     id: "invoice",
     title: "Invoice",
     category: "Billing",
-    author: "emailmd",
+    author: "Email.md",
     markdown: `---
 preheader: "Your invoice is ready"
 ---
@@ -189,7 +194,7 @@ Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Unsubscribe](https://example
     id: "event-invitation",
     title: "Event Invitation",
     category: "Events",
-    author: "emailmd",
+    author: "Email.md",
     markdown: `---
 preheader: "You're invited!"
 ---
@@ -218,6 +223,40 @@ Keynotes from industry leaders, hands-on workshops, and a chance to connect with
 
 ::: footer
 Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Unsubscribe](https://example.com/unsub)
+:::
+`,
+  },
+  {
+    id: "confirm-email",
+    title: "Confirm Email",
+    category: "Onboarding",
+    author: "Email.md",
+    image: "https://imgs.emailmd.dev/ss/confirm_email.png",
+    markdown: `---
+preheader: "Confirm your email address"
+theme: dark
+---
+
+::: header
+![Logo](https://imgs.emailmd.dev/logoipsum-388.png){width="200"}
+:::
+
+# Confirm your email address
+
+Your confirmation code is below - enter it in your open browser window and we'll help you get signed in.
+
+::: callout center compact
+# DFY-X7U
+:::
+
+If you didn't request this email, there's nothing to worry about, you can safely ignore it.
+
+::: footer
+![Logo](https://imgs.emailmd.dev/logoipsum-389.png){width="48"}
+
+Acme Inc. | 123 Main St | [Unsubscribe](https://example.com/unsub)
+
+![LinkedIn](https://imgs.emailmd.dev/linkedin_negative.png){width=24} ![Github](https://imgs.emailmd.dev/github_negative.png){width=24} ![Discord](https://imgs.emailmd.dev/discord_negative.png){width=24}
 :::
 `,
   },

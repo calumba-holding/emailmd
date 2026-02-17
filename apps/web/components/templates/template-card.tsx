@@ -10,7 +10,7 @@ export function TemplateCard({ template }: { template: Template }) {
     >
       <div className="relative h-75 overflow-hidden border-b border-border bg-white">
         <Image
-          src="https://imgs.emailmd.dev/ss/invoice.png"
+          src={template.image ?? "https://imgs.emailmd.dev/ss/invoice.png"}
           alt={template.title}
           fill
           className="object-cover object-top"
