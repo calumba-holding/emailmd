@@ -149,6 +149,7 @@ function renderButtonSegment(segment: Segment, theme: Theme): string {
   const attrs = segment.attrs!;
   const isSecondary = attrs.variant === 'secondary';
   const customColor = attrs.color;
+  const isFullWidth = attrs.width === 'full';
 
   let bgColor: string;
   let textColor: string;
@@ -166,9 +167,11 @@ function renderButtonSegment(segment: Segment, theme: Theme): string {
     textColor = theme.buttonTextColor;
   }
 
+  const widthAttr = isFullWidth ? ' width="100%"' : '';
+
   return `<mj-section background-color="${theme.contentColor}" padding="8px 32px">
       <mj-column>
-        <mj-button background-color="${bgColor}" color="${textColor}" font-size="16px" font-weight="600" border-radius="8px" inner-padding="14px 32px" ${border} href="${attrs.href}">${attrs.text}</mj-button>
+        <mj-button background-color="${bgColor}" color="${textColor}" font-size="16px" font-weight="600" border-radius="8px" inner-padding="14px 32px"${widthAttr} ${border} href="${attrs.href}">${attrs.text}</mj-button>
       </mj-column>
     </mj-section>`;
 }
@@ -177,6 +180,7 @@ function renderButtonGroupSegment(segment: Segment, theme: Theme): string {
   const columns = segment.buttons!.map(attrs => {
     const isSecondary = attrs.variant === 'secondary';
     const customColor = attrs.color;
+    const isFullWidth = attrs.width === 'full';
 
     let bgColor: string;
     let textColor: string;
@@ -194,8 +198,10 @@ function renderButtonGroupSegment(segment: Segment, theme: Theme): string {
       textColor = theme.buttonTextColor;
     }
 
+    const widthAttr = isFullWidth ? ' width="100%"' : '';
+
     return `<mj-column>
-        <mj-button background-color="${bgColor}" color="${textColor}" font-size="16px" font-weight="600" border-radius="8px" inner-padding="14px 32px" padding="10px 0" ${border} href="${attrs.href}">${attrs.text}</mj-button>
+        <mj-button background-color="${bgColor}" color="${textColor}" font-size="16px" font-weight="600" border-radius="8px" inner-padding="14px 32px" padding="10px 0"${widthAttr} ${border} href="${attrs.href}">${attrs.text}</mj-button>
       </mj-column>`;
   }).join('\n      ');
 

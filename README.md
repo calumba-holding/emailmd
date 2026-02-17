@@ -221,6 +221,22 @@ Place multiple buttons on the same line to render them side-by-side:
 
 Buttons on separate lines (separated by a blank line) stack vertically as usual. MJML handles responsive stacking automatically — side-by-side on desktop, stacked on mobile.
 
+### Full-Width Buttons
+
+Make a button span the full width of the email content area:
+
+```markdown
+[Get Started](https://example.com){button width="full"}
+```
+
+Combines with any variant or color:
+
+```markdown
+[Learn More](https://example.com){button.secondary width="full"}
+
+[Shop Sale](https://example.com){button color="#dc2626" width="full"}
+```
+
 ## Images
 
 Block images (standalone paragraph) are automatically rendered as responsive, centered email images:

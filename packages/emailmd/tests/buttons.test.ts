@@ -70,3 +70,48 @@ describe('button syntax', () => {
     expect(text).toContain('Learn More: https://example.com/more');
   });
 });
+
+describe('full-width buttons', () => {
+  it('renders {button width="full"} as a full-width button', () => {
+    const { html } = render('[Get Started](https://example.com){button width="full"}');
+    expect(html).toContain('https://example.com');
+    expect(html).toContain('Get Started');
+    expect(html).toContain('width="100%"');
+  });
+
+  it('renders {button.secondary width="full"} as a full-width secondary button', () => {
+    const { html } = render('[Learn More](https://example.com){button.secondary width="full"}');
+    expect(html).toContain('Learn More');
+    expect(html).toContain('width="100%"');
+    expect(html).toContain('transparent');
+    expect(html).toContain('2px solid');
+  });
+
+  it('renders {button color="#dc2626" width="full"} with custom color and full width', () => {
+    const { html } = render('[Shop Sale](https://example.com){button color="#dc2626" width="full"}');
+    expect(html).toContain('Shop Sale');
+    expect(html).toContain('#dc2626');
+    expect(html).toContain('width="100%"');
+  });
+
+  it('regular button is narrower than full-width button', () => {
+    const regular = render('[Click](https://example.com){button}').html;
+    const fullWidth = render('[Click](https://example.com){button width="full"}').html;
+    // Full-width button should produce a wider table structure
+    expect(fullWidth).toContain('width:100%');
+    // Regular button table uses border-collapse:separate without width:100%
+    expect(regular).not.toContain('style="border-collapse:separate;width:100%');
+  });
+
+  it('renders full-width button in a button group', () => {
+    const { html } = render('[A](https://a.com){button width="full"} [B](https://b.com){button.secondary}');
+    expect(html).toContain('https://a.com');
+    expect(html).toContain('https://b.com');
+    expect(html).toContain('width="100%"');
+  });
+
+  it('produces plain text for full-width buttons', () => {
+    const { text } = render('[Get Started](https://example.com){button width="full"}');
+    expect(text).toContain('Get Started: https://example.com');
+  });
+});

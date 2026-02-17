@@ -45,8 +45,8 @@ function parseMarkerAttrs(attrString: string): Record<string, string> {
 const BUTTON_PARA_RE = /<p>\s*((?:<a\s+[^>]*>[^<]*<\/a>\s*)+)<\/p>/g;
 const INNER_LINK_RE = /<a\s+([^>]*)>([^<]*)<\/a>/g;
 
-function parseButtonAttrs(attrString: string): { isButton: boolean; href: string; variant?: string; color?: string } {
-  const result = { isButton: false, href: '', variant: undefined as string | undefined, color: undefined as string | undefined };
+function parseButtonAttrs(attrString: string): { isButton: boolean; href: string; variant?: string; color?: string; width?: string } {
+  const result = { isButton: false, href: '', variant: undefined as string | undefined, color: undefined as string | undefined, width: undefined as string | undefined };
 
   // Check for button attribute (button="" or button.secondary="")
   if (/\bbutton\.secondary\b/.test(attrString)) {
@@ -65,6 +65,10 @@ function parseButtonAttrs(attrString: string): { isButton: boolean; href: string
   // Extract color attribute (from {button color="#dc2626"})
   const colorMatch = attrString.match(/\bcolor="([^"]*)"/);
   if (colorMatch) result.color = colorMatch[1];
+
+  // Extract width attribute (from {button width="full"})
+  const widthMatch = attrString.match(/\bwidth="([^"]*)"/);
+  if (widthMatch) result.width = widthMatch[1];
 
   return result;
 }
@@ -90,12 +94,14 @@ function extractButtons(html: string): { html: string; buttons: Segment[] } {
       const attrs: Record<string, string> = { href: parsed.href, text };
       if (parsed.variant) attrs.variant = parsed.variant;
       if (parsed.color) attrs.color = parsed.color;
+      if (parsed.width) attrs.width = parsed.width;
       buttons.push({ type: 'button', content: text, attrs });
     } else {
       const groupButtons = links.map(({ parsed, text }) => {
         const attrs: Record<string, string> = { href: parsed.href, text };
         if (parsed.variant) attrs.variant = parsed.variant;
         if (parsed.color) attrs.color = parsed.color;
+        if (parsed.width) attrs.width = parsed.width;
         return attrs;
       });
       buttons.push({ type: 'button-group', content: '', buttons: groupButtons });
