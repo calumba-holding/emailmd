@@ -13,35 +13,64 @@ export const templates: Template[] = [
     title: "Welcome Email",
     category: "Onboarding",
     author: "Email.md",
+    image: "https://imgs.emailmd.dev/ss/welcome.png",
     markdown: `---
-preheader: "Welcome aboard!"
+preheader: "Your next adventure starts now"
+theme: dark
+brand_color: "#00F7A4"
+button_color: "#00F7A4"
+button_text_color: "#09090b"
 ---
 
 ::: header
-![Logo](https://imgs.emailmd.dev/logoipsum-336.png){width="200"}
+![StageDive](https://imgs.emailmd.dev/logoipsum-363.png){width="100"}
 :::
 
-# Welcome to Acme!
+::: hero https://imgs.emailmd.dev/stagedive_hero.jpg
+# You're in. Let's go.
+:::
 
-We're thrilled to have you on board. Your account is all set up and ready to go.
+[Browse Experiences](https://example.com/explore){button}
 
-Here's what you can do next:
+::: centered
+We built this for people who'd rather *be there* than scroll past it.
+Every show, every game, every moment — we make it effortless to get in the door.
+:::
 
-- **Complete your profile** — Add your details so we can personalize your experience.
-- **Explore the dashboard** — Get familiar with the tools at your fingertips.
-- **Invite your team** — Collaboration is better together.
-
-[Go to Dashboard](https://example.com/dashboard){button}
+## Here's why people stick around
 
 ::: callout
-**Need help getting started?** Check out our [quick-start guide](https://example.com/guide) for a walkthrough of the key features.
+:ticket: **Best price, every time** — We scour every source so you never overpay. That's a promise.
 :::
 
-Cheers,
-The Acme Team
+::: callout
+:eyes: **See before you sit** — Preview your exact view from any seat in the venue before you commit.
+:::
+
+::: callout
+:iphone: **Your phone is your ticket** — No printing. No will-call lines. Just walk in.
+:::
+
+::: callout
+:heart: **Never miss a drop** — Follow your favorite artists and teams. We'll ping you before anyone else.
+:::
+
+[Find Something Tonight](https://example.com/tonight){button}
+
+::: highlight center bg=#00F7A4 color=#09090b
+**Real tickets. Real prices. Zero surprises.**
+:::
+
+::: centered
+:wave: Questions? Just reply to this email — a real human will answer.
+:::
 
 ::: footer
-Acme Inc. | 123 Main St, San Francisco, CA 94102 | [Unsubscribe](https://example.com/unsub)
+[iOS](https://example.com/ios) | [Android](https://example.com/android) | [Web](https://example.com/web)
+
+StageDive HQ · 123 Market St · San Francisco, CA 94105
+
+[Unsubscribe](https://example.com/unsub) · [Preferences](https://example.com/prefs)
 :::
 `,
   },
