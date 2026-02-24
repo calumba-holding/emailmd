@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function CopyButton({ text, label }: { text: string; label: string }) {
+export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -18,7 +18,6 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
       variant="ghost"
       size="icon-sm"
       onClick={handleCopy}
-      title={`Copy ${label}`}
     >
       {copied ? (
         <Check className="size-3.5" />

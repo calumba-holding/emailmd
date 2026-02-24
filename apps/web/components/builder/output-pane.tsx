@@ -63,8 +63,8 @@ export function OutputPane({ html, text }: OutputPaneProps) {
               </Button>
             </>
           )}
-          {tab === "html" && <CopyButton text={html} label="HTML" />}
-          {tab === "text" && <CopyButton text={text} label="Plain Text" />}
+          {tab === "html" && <CopyButton text={html} />}
+          {tab === "text" && <CopyButton text={text} />}
         </div>
       </div>
 

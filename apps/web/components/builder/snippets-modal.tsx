@@ -98,12 +98,21 @@ Thanks for reading.
   },
 ];
 
-export function SnippetsModal() {
+interface SnippetsModalProps {
+  onInsert?: (text: string) => void;
+}
+
+export function SnippetsModal({ onInsert }: SnippetsModalProps) {
   const [selected, setSelected] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  function handleCopy() {
-    navigator.clipboard.writeText(SNIPPETS[selected].content);
+  function handleInsert() {
+    const content = SNIPPETS[selected].content;
+    if (onInsert) {
+      onInsert(content);
+    } else {
+      navigator.clipboard.writeText(content);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
@@ -119,7 +128,7 @@ export function SnippetsModal() {
         <DialogHeader>
           <DialogTitle>Snippets</DialogTitle>
           <DialogDescription>
-            Click a snippet to preview, then copy and paste into your email.
+            Click a snippet to preview, then insert into your email.
           </DialogDescription>
         </DialogHeader>
 
@@ -155,7 +164,7 @@ export function SnippetsModal() {
               <Button
                 variant="ghost"
                 size="icon-sm"
-                onClick={handleCopy}
+                onClick={handleInsert}
                 className="absolute top-2 right-2"
               >
                 {copied ? (

@@ -1,9 +1,7 @@
 "use client";
 
-import { CopyButton } from "./copy-button";
-import { ThemeModal } from "./theme-modal";
-import { SnippetsModal } from "./snippets-modal";
-import { IconsModal } from "./icons-modal";
+import { useRef, useEffect } from "react";
+import { EditorToolbar } from "./editor-toolbar";
 
 interface EditorPaneProps {
   value: string;
@@ -11,20 +9,32 @@ interface EditorPaneProps {
 }
 
 export function EditorPane({ value, onChange }: EditorPaneProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const pendingSelectionRef = useRef<{ start: number; end: number } | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (pendingSelectionRef.current && textareaRef.current) {
+      const { start, end } = pendingSelectionRef.current;
+      textareaRef.current.setSelectionRange(start, end);
+      textareaRef.current.focus();
+      pendingSelectionRef.current = null;
+    }
+  }, [value]);
+
   return (
     <div className="flex flex-1 flex-col border-r border-border">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-muted/30">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          Markdown
-        </span>
-        <div className="flex items-center gap-1">
-          <SnippetsModal />
-          <IconsModal />
-          <ThemeModal markdown={value} onChange={onChange} />
-          <CopyButton text={value} label="Markdown" />
-        </div>
+      <div className="px-2 py-1.5 border-b border-border bg-muted/30">
+        <EditorToolbar
+          textareaRef={textareaRef}
+          value={value}
+          onChange={onChange}
+          pendingSelectionRef={pendingSelectionRef}
+        />
       </div>
       <textarea
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         spellCheck={false}

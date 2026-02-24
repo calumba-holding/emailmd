@@ -16,7 +16,12 @@ import {
 } from "@/components/ui/dialog";
 import { EMOJI_DATA } from "./emoji-data";
 
-export function IconsModal() {
+interface IconsModalProps {
+  onInsert?: (text: string) => void;
+}
+
+export function IconsModal({ onInsert }: IconsModalProps) {
+  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -27,14 +32,20 @@ export function IconsModal() {
     return all.filter(([name]) => name.includes(q));
   }, [search]);
 
-  function handleCopy(name: string) {
-    navigator.clipboard.writeText(`:${name}:`);
-    setCopied(name);
-    setTimeout(() => setCopied(null), 1500);
+  function handleSelect(name: string) {
+    const shortcode = `:${name}:`;
+    if (onInsert) {
+      onInsert(shortcode);
+      setOpen(false);
+    } else {
+      navigator.clipboard.writeText(shortcode);
+      setCopied(name);
+      setTimeout(() => setCopied(null), 1500);
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon-sm">
           <Smile className="size-3.5" />
@@ -44,7 +55,7 @@ export function IconsModal() {
         <DialogHeader>
           <DialogTitle>Emoji</DialogTitle>
           <DialogDescription>
-            Search and click to copy the <code>:shortcode:</code> syntax.
+            Search and click to insert the <code>:shortcode:</code> syntax.
           </DialogDescription>
         </DialogHeader>
 
@@ -64,14 +75,14 @@ export function IconsModal() {
               entries.map(([name, emoji]) => (
                 <button
                   key={name}
-                  onClick={() => handleCopy(name)}
+                  onClick={() => handleSelect(name)}
                   className="flex flex-col items-center gap-0.5 rounded-md p-1.5 text-center transition-colors hover:bg-muted/50"
                   title={`:${name}:`}
                 >
                   <span className="text-xl leading-none">{emoji}</span>
                   {copied === name ? (
                     <span className="text-[10px] text-green-600 font-medium">
-                      Copied!
+                      Copied
                     </span>
                   ) : (
                     <span className="text-[10px] text-muted-foreground truncate w-full">

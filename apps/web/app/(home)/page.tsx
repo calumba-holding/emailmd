@@ -92,7 +92,7 @@ export default function Page() {
           <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-4 py-2 font-mono text-sm">
             <span className="text-muted-foreground">$</span>
             <span>npm install emailmd</span>
-            <CopyButton text="npm install emailmd" label="install command" />
+            <CopyButton text="npm install emailmd" />
           </div>
         </div>
       </section>
