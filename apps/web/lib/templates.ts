@@ -403,6 +403,61 @@ Unreasonably good protein bars.
 `,
   },
   {
+    id: "rate-support",
+    title: "Rate Your Support",
+    category: "Feedback",
+    author: "Email.md",
+    image: "https://imgs.emailmd.dev/ss/rate_support.png",
+    markdown: `---
+preheader: "Be honest — we can take it."
+theme: dark
+brand_color: "#FF6B6B"
+button_color: "#FF6B6B"
+button_text_color: "#09090b"
+---
+
+::: header
+![Pager](https://imgs.emailmd.dev/logoipsum-412.png){width="140"}
+:::
+
+# So... how'd we do?
+
+Hey Casey — you pinged us about [invoice #PGR-7217](https://example.com/tickets/7217), and our support team thinks that chat went *great.*
+
+Which is, to be fair, exactly what you'd expect us to say.
+
+So let's hear it from you.
+
+::: centered
+**Rate your support experience**
+:::
+
+[:star_struck: Chef's kiss](https://example.com/rate/5){button}
+
+[:grinning: Pretty solid](https://example.com/rate/4){button.secondary}
+
+[:neutral_face: Middle of the road](https://example.com/rate/3){button.secondary}
+
+[:confused: Could've been better](https://example.com/rate/2){button.secondary}
+
+[:weary: We need to talk](https://example.com/rate/1){button.secondary}
+
+::: callout
+:speech_balloon: **Got more to say?** Just hit reply — a real human reads every response, and we mean it. Good rants especially welcome.
+:::
+
+::: centered
+Your feedback shapes what we build, how we respond, and — crucially — who gets cake on Friday.
+:::
+
+::: footer
+**Pager** · Infra that ships while you sleep.
+
+[Status](https://example.com/status) · [Docs](https://example.com/docs) · [Unsubscribe](https://example.com/unsub)
+:::
+`,
+  },
+  {
     id: "confirm-email",
     title: "Confirm Email",
     category: "Onboarding",
