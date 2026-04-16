@@ -1,23 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '../src/index.js';
 
-describe('callout directive', () => {
-  it('renders callout with cardColor background', () => {
-    const { html } = render('::: callout\nHello from callout\n:::');
+describe('callout directive', async () => {
+  it('renders callout with cardColor background', async () => {
+    const { html } = await render('::: callout\nHello from callout\n:::');
     expect(html).toContain('Hello from callout');
     expect(html).toContain('#f4f4f5'); // default cardColor
   });
 
-  it('renders markdown inside callout', () => {
-    const { html } = render('::: callout\n**Bold** and [a link](https://example.com)\n:::');
+  it('renders markdown inside callout', async () => {
+    const { html } = await render('::: callout\n**Bold** and [a link](https://example.com)\n:::');
     expect(html).toContain('<strong>Bold</strong>');
     expect(html).toContain('href="https://example.com"');
   });
 });
 
-describe('highlight directive', () => {
-  it('renders highlight with brandColor background and white text', () => {
-    const { html } = render('::: highlight\nLimited time offer\n:::');
+describe('highlight directive', async () => {
+  it('renders highlight with brandColor background and white text', async () => {
+    const { html } = await render('::: highlight\nLimited time offer\n:::');
     expect(html).toContain('Limited time offer');
     expect(html).toContain('#18181b'); // default brandColor
     // The highlight section should produce white text
@@ -25,58 +25,58 @@ describe('highlight directive', () => {
   });
 });
 
-describe('centered directive', () => {
-  it('renders centered text with center alignment', () => {
-    const { html } = render('::: centered\nCentered content\n:::');
+describe('centered directive', async () => {
+  it('renders centered text with center alignment', async () => {
+    const { html } = await render('::: centered\nCentered content\n:::');
     expect(html).toContain('Centered content');
     expect(html).toContain('text-align:center');
   });
 
-  it('renders custom text color on centered', () => {
-    const { html } = render('::: centered color=#00F7A4\nGreen text\n:::');
+  it('renders custom text color on centered', async () => {
+    const { html } = await render('::: centered color=#00F7A4\nGreen text\n:::');
     expect(html).toContain('Green text');
     expect(html).toContain('#00F7A4');
   });
 
-  it('strips parameterized centered markers in plain text', () => {
-    const { text } = render('::: centered color=#00F7A4\nCentered text\n:::');
+  it('strips parameterized centered markers in plain text', async () => {
+    const { text } = await render('::: centered color=#00F7A4\nCentered text\n:::');
     expect(text).toContain('Centered text');
     expect(text).not.toContain('EMAILMD');
     expect(text).not.toContain('00F7A4');
   });
 });
 
-describe('hero directive', () => {
-  it('renders hero with background image', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg\n# Welcome\nGet started today!\n:::');
+describe('hero directive', async () => {
+  it('renders hero with background image', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg\n# Welcome\nGet started today!\n:::');
     expect(html).toContain('Welcome');
     expect(html).toContain('Get started today!');
     expect(html).toContain('https://example.com/hero.jpg');
   });
 
-  it('renders centered white text over background', () => {
-    const { html } = render('::: hero https://example.com/bg.png\nOverlay text\n:::');
+  it('renders centered white text over background', async () => {
+    const { html } = await render('::: hero https://example.com/bg.png\nOverlay text\n:::');
     expect(html).toContain('Overlay text');
     // Default buttonTextColor is #fafafa
     expect(html).toContain('#fafafa');
   });
 
-  it('renders markdown inside hero', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg\n**Bold** and [a link](https://example.com)\n:::');
+  it('renders markdown inside hero', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg\n**Bold** and [a link](https://example.com)\n:::');
     expect(html).toContain('<strong>Bold</strong>');
     expect(html).toContain('href="https://example.com"');
   });
 
-  it('strips hero markers in plain text output', () => {
-    const { text } = render('::: hero https://example.com/hero.jpg\n# Welcome\nGet started today!\n:::');
+  it('strips hero markers in plain text output', async () => {
+    const { text } = await render('::: hero https://example.com/hero.jpg\n# Welcome\nGet started today!\n:::');
     expect(text).toContain('WELCOME');
     expect(text).toContain('Get started today!');
     expect(text).not.toContain('EMAILMD');
     expect(text).not.toContain('hero.jpg');
   });
 
-  it('strips hero markers with color param in plain text output', () => {
-    const { text } = render('::: hero https://example.com/hero.jpg color=#ffffff\n# Welcome\nGet started!\n:::');
+  it('strips hero markers with color param in plain text output', async () => {
+    const { text } = await render('::: hero https://example.com/hero.jpg color=#ffffff\n# Welcome\nGet started!\n:::');
     expect(text).toContain('WELCOME');
     expect(text).toContain('Get started!');
     expect(text).not.toContain('EMAILMD');
@@ -84,59 +84,59 @@ describe('hero directive', () => {
     expect(text).not.toContain('ffffff');
   });
 
-  it('renders custom text color on hero', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg?w=1200&h=800 color=#ffffff\n# Welcome\nSome text\n:::');
+  it('renders custom text color on hero', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg?w=1200&h=800 color=#ffffff\n# Welcome\nSome text\n:::');
     expect(html).toContain('#ffffff');
     expect(html).toContain('https://example.com/hero.jpg?w=1200');
     expect(html).toMatch(/h1[^>]*style="color: #ffffff"/);
   });
 
-  it('accepts color param before URL', () => {
-    const { html } = render('::: hero color=#20ffff https://example.com/hero.jpg\n# Welcome\n:::');
+  it('accepts color param before URL', async () => {
+    const { html } = await render('::: hero color=#20ffff https://example.com/hero.jpg\n# Welcome\n:::');
     expect(html).toContain('https://example.com/hero.jpg');
     expect(html).toMatch(/h1[^>]*style="color: #20ffff"/);
   });
 });
 
-describe('callout directive with params', () => {
-  it('renders center-aligned callout', () => {
-    const { html } = render('::: callout center\nCentered callout\n:::');
+describe('callout directive with params', async () => {
+  it('renders center-aligned callout', async () => {
+    const { html } = await render('::: callout center\nCentered callout\n:::');
     expect(html).toContain('Centered callout');
     expect(html).toContain('text-align:center');
   });
 
-  it('renders right-aligned callout', () => {
-    const { html } = render('::: callout right\nRight callout\n:::');
+  it('renders right-aligned callout', async () => {
+    const { html } = await render('::: callout right\nRight callout\n:::');
     expect(html).toContain('Right callout');
     expect(html).toContain('text-align:right');
   });
 
-  it('renders compact padding on callout', () => {
-    const { html } = render('::: callout compact\nCompact callout\n:::');
+  it('renders compact padding on callout', async () => {
+    const { html } = await render('::: callout compact\nCompact callout\n:::');
     expect(html).toContain('Compact callout');
     expect(html).toContain('12px 16px');
   });
 
-  it('renders spacious padding on callout', () => {
-    const { html } = render('::: callout spacious\nSpacious callout\n:::');
+  it('renders spacious padding on callout', async () => {
+    const { html } = await render('::: callout spacious\nSpacious callout\n:::');
     expect(html).toContain('Spacious callout');
     expect(html).toContain('32px 40px');
   });
 
-  it('renders custom bg color on callout', () => {
-    const { html } = render('::: callout bg=#eff6ff\nCustom bg\n:::');
+  it('renders custom bg color on callout', async () => {
+    const { html } = await render('::: callout bg=#eff6ff\nCustom bg\n:::');
     expect(html).toContain('Custom bg');
     expect(html).toContain('#eff6ff');
   });
 
-  it('renders custom text color on callout', () => {
-    const { html } = render('::: callout color=#1e40af\nCustom color\n:::');
+  it('renders custom text color on callout', async () => {
+    const { html } = await render('::: callout color=#1e40af\nCustom color\n:::');
     expect(html).toContain('Custom color');
     expect(html).toContain('#1e40af');
   });
 
-  it('renders combined params on callout', () => {
-    const { html } = render('::: callout center compact color=#1e40af bg=#eff6ff\nAll params\n:::');
+  it('renders combined params on callout', async () => {
+    const { html } = await render('::: callout center compact color=#1e40af bg=#eff6ff\nAll params\n:::');
     expect(html).toContain('All params');
     expect(html).toContain('text-align:center');
     expect(html).toContain('12px 16px');
@@ -144,8 +144,8 @@ describe('callout directive with params', () => {
     expect(html).toContain('#eff6ff');
   });
 
-  it('strips parameterized callout markers in plain text', () => {
-    const { text } = render('::: callout center compact bg=#eff6ff\n**Important**\n:::');
+  it('strips parameterized callout markers in plain text', async () => {
+    const { text } = await render('::: callout center compact bg=#eff6ff\n**Important**\n:::');
     expect(text).toContain('Important');
     expect(text).not.toContain('EMAILMD');
     expect(text).not.toContain('center');
@@ -153,95 +153,95 @@ describe('callout directive with params', () => {
   });
 });
 
-describe('highlight directive with params', () => {
-  it('renders center-aligned highlight', () => {
-    const { html } = render('::: highlight center\nCentered highlight\n:::');
+describe('highlight directive with params', async () => {
+  it('renders center-aligned highlight', async () => {
+    const { html } = await render('::: highlight center\nCentered highlight\n:::');
     expect(html).toContain('Centered highlight');
     expect(html).toContain('text-align:center');
   });
 
-  it('renders custom bg color on highlight', () => {
-    const { html } = render('::: highlight bg=#dc2626\nCustom bg\n:::');
+  it('renders custom bg color on highlight', async () => {
+    const { html } = await render('::: highlight bg=#dc2626\nCustom bg\n:::');
     expect(html).toContain('#dc2626');
   });
 
-  it('renders compact padding on highlight', () => {
-    const { html } = render('::: highlight compact\nCompact highlight\n:::');
+  it('renders compact padding on highlight', async () => {
+    const { html } = await render('::: highlight compact\nCompact highlight\n:::');
     expect(html).toContain('12px 16px');
   });
 });
 
-describe('header directive with params', () => {
-  it('defaults to center when no alignment specified', () => {
-    const { html } = render('::: header\nHeader content\n:::');
+describe('header directive with params', async () => {
+  it('defaults to center when no alignment specified', async () => {
+    const { html } = await render('::: header\nHeader content\n:::');
     expect(html).toContain('text-align:center');
   });
 
-  it('renders left-aligned header', () => {
-    const { html } = render('::: header left\nLeft header\n:::');
+  it('renders left-aligned header', async () => {
+    const { html } = await render('::: header left\nLeft header\n:::');
     expect(html).toContain('Left header');
     expect(html).toContain('text-align:left');
   });
 
-  it('renders custom text color on header', () => {
-    const { html } = render('::: header color=#1e40af\nColored header\n:::');
+  it('renders custom text color on header', async () => {
+    const { html } = await render('::: header color=#1e40af\nColored header\n:::');
     expect(html).toContain('#1e40af');
   });
 });
 
-describe('footer directive with params', () => {
-  it('defaults to center when no alignment specified', () => {
-    const { html } = render('::: footer\nFooter content\n:::');
+describe('footer directive with params', async () => {
+  it('defaults to center when no alignment specified', async () => {
+    const { html } = await render('::: footer\nFooter content\n:::');
     expect(html).toContain('text-align:center');
   });
 
-  it('renders left-aligned footer', () => {
-    const { html } = render('::: footer left\nLeft footer\n:::');
+  it('renders left-aligned footer', async () => {
+    const { html } = await render('::: footer left\nLeft footer\n:::');
     expect(html).toContain('Left footer');
     expect(html).toContain('text-align:left');
   });
 
-  it('strips parameterized footer markers in plain text', () => {
-    const { text } = render('::: footer left color=#666666\nFooter text\n:::');
+  it('strips parameterized footer markers in plain text', async () => {
+    const { text } = await render('::: footer left color=#666666\nFooter text\n:::');
     expect(text).toContain('Footer text');
     expect(text).not.toContain('EMAILMD');
   });
 });
 
-describe('border-radius on directives', () => {
-  it('renders custom border-radius on callout', () => {
-    const { html } = render('::: callout border-radius=16px\nRounded callout\n:::');
+describe('border-radius on directives', async () => {
+  it('renders custom border-radius on callout', async () => {
+    const { html } = await render('::: callout border-radius=16px\nRounded callout\n:::');
     expect(html).toContain('Rounded callout');
     expect(html).toContain('border-radius:16px');
   });
 
-  it('renders custom border-radius on highlight', () => {
-    const { html } = render('::: highlight border-radius=0\nSharp highlight\n:::');
+  it('renders custom border-radius on highlight', async () => {
+    const { html } = await render('::: highlight border-radius=0\nSharp highlight\n:::');
     expect(html).toContain('Sharp highlight');
     expect(html).toContain('border-radius:0');
   });
 
-  it('applies theme borderRadius to callout when no per-directive override', () => {
-    const { html } = render('::: callout\nCallout text\n:::', { theme: { borderRadius: '20px' } });
+  it('applies theme borderRadius to callout when no per-directive override', async () => {
+    const { html } = await render('::: callout\nCallout text\n:::', { theme: { borderRadius: '20px' } });
     expect(html).toContain('Callout text');
     expect(html).toContain('border-radius:20px');
   });
 
-  it('applies theme borderRadius to highlight when no per-directive override', () => {
-    const { html } = render('::: highlight\nHighlight text\n:::', { theme: { borderRadius: '20px' } });
+  it('applies theme borderRadius to highlight when no per-directive override', async () => {
+    const { html } = await render('::: highlight\nHighlight text\n:::', { theme: { borderRadius: '20px' } });
     expect(html).toContain('Highlight text');
     expect(html).toContain('border-radius:20px');
   });
 
-  it('per-directive border-radius overrides theme on callout', () => {
-    const { html } = render('::: callout border-radius=0\nSharp callout\n:::', { theme: { borderRadius: '20px' } });
+  it('per-directive border-radius overrides theme on callout', async () => {
+    const { html } = await render('::: callout border-radius=0\nSharp callout\n:::', { theme: { borderRadius: '20px' } });
     expect(html).toContain('border-radius:0');
     expect(html).not.toContain('border-radius:20px');
   });
 });
 
-describe('multiple directives', () => {
-  it('renders multiple directives in sequence', () => {
+describe('multiple directives', async () => {
+  it('renders multiple directives in sequence', async () => {
     const md = `::: callout
 First block
 :::
@@ -253,13 +253,13 @@ Second block
 ::: centered
 Third block
 :::`;
-    const { html } = render(md);
+    const { html } = await render(md);
     expect(html).toContain('First block');
     expect(html).toContain('Second block');
     expect(html).toContain('Third block');
   });
 
-  it('renders regular text between directives', () => {
+  it('renders regular text between directives', async () => {
     const md = `# Heading
 
 Some paragraph text.
@@ -269,7 +269,7 @@ A callout
 :::
 
 More text after.`;
-    const { html } = render(md);
+    const { html } = await render(md);
     expect(html).toContain('<h1>Heading</h1>');
     expect(html).toContain('Some paragraph text.');
     expect(html).toContain('A callout');
@@ -277,17 +277,17 @@ More text after.`;
   });
 });
 
-describe('buttons inside directives', () => {
-  it('renders button inside hero with text', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg\n# Welcome\n\n[Sign Up](https://example.com/signup){button}\n:::');
+describe('buttons inside directives', async () => {
+  it('renders button inside hero with text', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg\n# Welcome\n\n[Sign Up](https://example.com/signup){button}\n:::');
     expect(html).toContain('Welcome');
     expect(html).toContain('Sign Up');
     expect(html).toContain('https://example.com/signup');
   });
 
-  it('renders button inside callout with text and preserves callout styling', () => {
-    const { html } = render('::: callout\nCheck out our offer!\n\n[Learn More](https://example.com){button}\n:::');
-    const plainButton = render('Check out our offer!\n\n[Learn More](https://example.com){button}');
+  it('renders button inside callout with text and preserves callout styling', async () => {
+    const { html } = await render('::: callout\nCheck out our offer!\n\n[Learn More](https://example.com){button}\n:::');
+    const plainButton = await render('Check out our offer!\n\n[Learn More](https://example.com){button}');
     expect(html).toContain('Check out our offer!');
     expect(html).toContain('Learn More');
     expect(html).toContain('https://example.com');
@@ -296,15 +296,15 @@ describe('buttons inside directives', () => {
     expect(count(html, '#f4f4f5')).toBeGreaterThan(count(plainButton.html, '#f4f4f5'));
   });
 
-  it('renders button group inside directive', () => {
-    const { html } = render('::: callout\n[Accept](https://example.com/yes){button} [Decline](https://example.com/no){button.secondary}\n:::');
+  it('renders button group inside directive', async () => {
+    const { html } = await render('::: callout\n[Accept](https://example.com/yes){button} [Decline](https://example.com/no){button.secondary}\n:::');
     expect(html).toContain('Accept');
     expect(html).toContain('Decline');
   });
 
-  it('renders button-only callout and preserves callout styling', () => {
-    const { html } = render('::: callout\n[Click Me](https://example.com){button}\n:::');
-    const plainButton = render('[Click Me](https://example.com){button}');
+  it('renders button-only callout and preserves callout styling', async () => {
+    const { html } = await render('::: callout\n[Click Me](https://example.com){button}\n:::');
+    const plainButton = await render('[Click Me](https://example.com){button}');
     expect(html).toContain('Click Me');
     expect(html).toContain('https://example.com');
     // Callout wrapper should add extra #f4f4f5 occurrences vs a plain button
@@ -312,16 +312,16 @@ describe('buttons inside directives', () => {
     expect(count(html, '#f4f4f5')).toBeGreaterThan(count(plainButton.html, '#f4f4f5'));
   });
 
-  it('renders button-only hero and preserves hero background', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg\n[Get Started](https://example.com/start){button}\n:::');
+  it('renders button-only hero and preserves hero background', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg\n[Get Started](https://example.com/start){button}\n:::');
     expect(html).toContain('https://example.com/hero.jpg');
     expect(html).toContain('Get Started');
     expect(html).toContain('https://example.com/start');
   });
 
-  it('renders button-only highlight and preserves highlight styling', () => {
-    const { html } = render('::: highlight\n[Buy Now](https://example.com/buy){button}\n:::');
-    const plainButton = render('[Buy Now](https://example.com/buy){button}');
+  it('renders button-only highlight and preserves highlight styling', async () => {
+    const { html } = await render('::: highlight\n[Buy Now](https://example.com/buy){button}\n:::');
+    const plainButton = await render('[Buy Now](https://example.com/buy){button}');
     expect(html).toContain('Buy Now');
     expect(html).toContain('https://example.com/buy');
     // Highlight wrapper should add extra #18181b occurrences (brandColor bg)
@@ -329,8 +329,8 @@ describe('buttons inside directives', () => {
     expect(count(html, '#18181b')).toBeGreaterThan(count(plainButton.html, '#18181b'));
   });
 
-  it('preserves hero styling when button has surrounding text', () => {
-    const { html } = render('::: hero https://example.com/hero.jpg\nJoin us today\n\n[Get Started](https://example.com/start){button}\n:::');
+  it('preserves hero styling when button has surrounding text', async () => {
+    const { html } = await render('::: hero https://example.com/hero.jpg\nJoin us today\n\n[Get Started](https://example.com/start){button}\n:::');
     expect(html).toContain('https://example.com/hero.jpg');
     expect(html).toContain('Join us today');
     expect(html).toContain('Get Started');

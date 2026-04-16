@@ -57,5 +57,14 @@ declare module 'mjml' {
     html: string;
     errors: MjmlError[];
   }
-  export default function mjml2html(input: string): MjmlResult;
+  interface MjmlOptions {
+    minify?: boolean;
+    fonts?: Record<string, string>;
+    validationLevel?: 'skip' | 'soft' | 'strict';
+    templateSyntax?: string;
+  }
+  export default function mjml2html(
+    input: string,
+    options?: MjmlOptions,
+  ): Promise<MjmlResult>;
 }

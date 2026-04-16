@@ -5,9 +5,9 @@ description: Complete API documentation for Email.md.
 
 ## `render(markdown, options?)`
 
-Renders markdown to email-safe HTML.
+Renders markdown to email-safe HTML. **Async** since v0.3.0 — returns a `Promise`.
 
-**Returns** `{ html, text, meta }`
+**Returns** `Promise<{ html, text, meta }>`
 
 - `html` — complete HTML email document
 - `text` — plain text version for the `text/plain` MIME part
@@ -16,7 +16,7 @@ Renders markdown to email-safe HTML.
 ```typescript
 import { render } from "emailmd";
 
-const { html, text, meta } = render("# Hello");
+const { html, text, meta } = await render("# Hello");
 ```
 
 ## `RenderOptions`
@@ -25,13 +25,17 @@ const { html, text, meta } = render("# Hello");
 {
   theme?: Partial<Theme>;
   wrapper?: 'default' | WrapperFn;
+  minify?: boolean;
+  fonts?: Record<string, string>;
 }
 ```
 
-| Option    | Type                     | Description                   |
-| --------- | ------------------------ | ----------------------------- |
-| `theme`   | `Partial<Theme>`         | Override default theme values |
-| `wrapper` | `'default' \| WrapperFn` | Custom email wrapper function |
+| Option    | Type                        | Description                                                    |
+| --------- | --------------------------- | -------------------------------------------------------------- |
+| `theme`   | `Partial<Theme>`            | Override default theme values                                  |
+| `wrapper` | `'default' \| WrapperFn`    | Custom email wrapper function                                  |
+| `minify`  | `boolean`                   | Minify output HTML. Default `false`.                           |
+| `fonts`   | `Record<string, string>`    | Custom web fonts: `{ [family]: url }` rendered as `<mj-font>`. |
 
 ## `RenderResult`
 
@@ -88,10 +92,10 @@ A pre-built dark theme object. Import and pass directly or spread with overrides
 import { render, darkTheme } from "emailmd";
 
 // Use as-is
-render(md, { theme: darkTheme });
+await render(md, { theme: darkTheme });
 
 // Override specific values
-render(md, { theme: { ...darkTheme, brandColor: "#e11d48" } });
+await render(md, { theme: { ...darkTheme, brandColor: "#e11d48" } });
 ```
 
 ## `buildHead(theme, preheader?)`

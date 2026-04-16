@@ -16,7 +16,7 @@ Import the `render` function and pass it a markdown string:
 ```typescript
 import { render } from "emailmd";
 
-const { html, text } = render(`
+const { html, text } = await render(`
 # Welcome!
 
 Thanks for signing up.
@@ -24,6 +24,8 @@ Thanks for signing up.
 [Get Started](https://example.com){button}
 `);
 ```
+
+`render` is asynchronous — use `await` (or `.then()`) to get the result.
 
 The `render` function returns:
 

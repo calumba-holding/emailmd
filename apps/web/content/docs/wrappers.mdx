@@ -19,7 +19,7 @@ const myWrapper: WrapperFn = (segments, theme, meta) => {
   return `<mjml>${head}<mj-body>${body}</mj-body></mjml>`;
 };
 
-render(md, { wrapper: myWrapper });
+await render(md, { wrapper: myWrapper });
 ```
 
 The wrapper function receives three arguments:

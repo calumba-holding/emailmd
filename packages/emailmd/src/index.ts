@@ -20,6 +20,10 @@ export interface RenderOptions {
   theme?: Partial<Theme>;
   /** Wrapper template. Built-in names or a custom {@link WrapperFn}. */
   wrapper?: 'default' | WrapperFn;
+  /** Minify the output HTML. Default: `false`. Useful for staying under Gmail's 102KB clip limit. */
+  minify?: boolean;
+  /** Custom web fonts as a map of family name → URL (rendered as `<mj-font>` tags). */
+  fonts?: Record<string, string>;
 }
 
 /** Object returned by {@link render}. */
@@ -44,7 +48,7 @@ export interface RenderResult {
  *
  * @example
  * ```ts
- * const { html, text, meta } = render(`
+ * const { html, text, meta } = await render(`
  * ---
  * preheader: Welcome!
  * ---
@@ -53,7 +57,7 @@ export interface RenderResult {
  * `);
  * ```
  */
-export function render(markdown: string, options?: RenderOptions): RenderResult {
+export async function render(markdown: string, options?: RenderOptions): Promise<RenderResult> {
   const { meta, content } = extractFrontmatter(markdown);
   const baseTheme = resolveBaseTheme(meta.theme as string | undefined);
   const frontmatterOverrides = frontmatterToThemeOverrides(meta);
@@ -67,7 +71,10 @@ export function render(markdown: string, options?: RenderOptions): RenderResult 
     preheader: meta.preheader as string | undefined,
   };
 
-  const html = renderMjml(segments, theme, wrapperMeta, wrapperFn);
+  const html = await renderMjml(segments, theme, wrapperMeta, wrapperFn, {
+    minify: options?.minify,
+    fonts: options?.fonts,
+  });
   const text = toPlainText(parsedHtml);
 
   return { html, text, meta: { ...meta } };

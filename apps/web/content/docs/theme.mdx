@@ -6,7 +6,7 @@ description: Customize colors and fonts to match your brand.
 Customize colors and fonts to match your brand:
 
 ```typescript
-const { html } = render(markdown, {
+const { html } = await render(markdown, {
   theme: {
     brandColor: '#e11d48',
     buttonColor: '#e11d48',
@@ -22,13 +22,13 @@ A built-in dark theme is available. Pass it directly to flip all colors at once:
 ```typescript
 import { render, darkTheme } from 'emailmd';
 
-const { html } = render(markdown, { theme: darkTheme });
+const { html } = await render(markdown, { theme: darkTheme });
 ```
 
 Or use it as a base and override individual values:
 
 ```typescript
-const { html } = render(markdown, {
+const { html } = await render(markdown, {
   theme: { ...darkTheme, brandColor: '#e11d48' },
 });
 ```

@@ -18,6 +18,7 @@ Arguments:
 Options:
   -o, --output <f>  Write output to file instead of stdout
   -t, --text        Output plain text instead of HTML
+  -m, --minify      Minify the HTML output
   -h, --help        Show this help message
   -v, --version     Show version number
 
@@ -25,6 +26,7 @@ Examples:
   emailmd input.md
   emailmd input.md -o output.html
   emailmd input.md --text
+  emailmd input.md --minify -o output.html
   echo "# Hello" | emailmd
 `.trimStart();
 
@@ -45,6 +47,7 @@ async function main(): Promise<void> {
       options: {
         output: { type: 'string', short: 'o' },
         text: { type: 'boolean', short: 't', default: false },
+        minify: { type: 'boolean', short: 'm', default: false },
         help: { type: 'boolean', short: 'h', default: false },
         version: { type: 'boolean', short: 'v', default: false },
       },
@@ -94,7 +97,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const result = render(markdown);
+  const result = await render(markdown, { minify: values.minify });
   const output = values.text ? result.text : result.html;
 
   if (values.output) {

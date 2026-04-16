@@ -91,7 +91,7 @@ campaign_id: "onboarding-v2"
 ```
 
 ```typescript
-const { html, text, meta } = render(markdown);
+const { html, text, meta } = await render(markdown);
 
 console.log(meta.subject);     // "Welcome to Acme"
 console.log(meta.campaign_id); // "onboarding-v2"

@@ -72,16 +72,23 @@ export function BuilderShell({
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
+    let cancelled = false;
     debounceRef.current = setTimeout(() => {
-      try {
-        const result = render(markdown);
-        setHtml(result.html);
-        setText(result.text);
-      } catch {
-        // keep previous output on error
-      }
+      (async () => {
+        try {
+          const result = await render(markdown);
+          if (cancelled) return;
+          setHtml(result.html);
+          setText(result.text);
+        } catch {
+          // keep previous output on error
+        }
+      })();
     }, 150);
-    return () => clearTimeout(debounceRef.current);
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceRef.current);
+    };
   }, [markdown]);
 
   return (

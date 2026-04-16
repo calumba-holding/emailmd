@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { extractFrontmatter, frontmatterToThemeOverrides, render, darkTheme } from '../src/index.js';
 
-describe('extractFrontmatter', () => {
-  it('extracts frontmatter and content', () => {
+describe('extractFrontmatter', async () => {
+  it('extracts frontmatter and content', async () => {
     const input = `---
 preheader: Hello
 ---
@@ -13,21 +13,21 @@ preheader: Hello
     expect(content.trim()).toBe('# Title');
   });
 
-  it('returns empty meta for markdown without frontmatter', () => {
+  it('returns empty meta for markdown without frontmatter', async () => {
     const { meta, content } = extractFrontmatter('# Just markdown');
     expect(meta).toEqual({});
     expect(content.trim()).toBe('# Just markdown');
   });
 });
 
-describe('frontmatterToThemeOverrides', () => {
-  it('converts snake_case keys to camelCase theme overrides', () => {
+describe('frontmatterToThemeOverrides', async () => {
+  it('converts snake_case keys to camelCase theme overrides', async () => {
     const meta = { button_color: '#FF0000', preheader: 'test' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides).toEqual({ buttonColor: '#FF0000' });
   });
 
-  it('converts multiple theme keys', () => {
+  it('converts multiple theme keys', async () => {
     const meta = {
       background_color: '#000',
       button_text_color: '#FFF',
@@ -41,13 +41,13 @@ describe('frontmatterToThemeOverrides', () => {
     });
   });
 
-  it('maps button_color to buttonColor theme override', () => {
+  it('maps button_color to buttonColor theme override', async () => {
     const meta = { button_color: '#dc2626' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides.buttonColor).toBe('#dc2626');
   });
 
-  it('converts button variant color keys', () => {
+  it('converts button variant color keys', async () => {
     const meta = {
       secondary_color: '#6366f1',
       secondary_text_color: '#312e81',
@@ -71,28 +71,28 @@ describe('frontmatterToThemeOverrides', () => {
     });
   });
 
-  it('converts border_radius to borderRadius', () => {
+  it('converts border_radius to borderRadius', async () => {
     const meta = { border_radius: '12px' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides).toEqual({ borderRadius: '12px' });
   });
 
-  it('ignores unknown keys', () => {
+  it('ignores unknown keys', async () => {
     const meta = { preheader: 'text', unknown_key: 'value' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides).toEqual({});
   });
 });
 
-describe('theme frontmatter shortcut', () => {
-  it('applies dark theme via theme: dark in frontmatter', () => {
-    const { html } = render(`---\ntheme: dark\n---\n\n# Hello`);
+describe('theme frontmatter shortcut', async () => {
+  it('applies dark theme via theme: dark in frontmatter', async () => {
+    const { html } = await render(`---\ntheme: dark\n---\n\n# Hello`);
     expect(html).toContain(darkTheme.backgroundColor);
     expect(html).toContain(darkTheme.contentColor);
   });
 
-  it('allows individual overrides on top of theme: dark', () => {
-    const { html } = render(`---\ntheme: dark\nbrand_color: "#e11d48"\n---\n\n# Hello`);
+  it('allows individual overrides on top of theme: dark', async () => {
+    const { html } = await render(`---\ntheme: dark\nbrand_color: "#e11d48"\n---\n\n# Hello`);
     expect(html).toContain(darkTheme.backgroundColor);
     expect(html).toContain('#e11d48');
   });

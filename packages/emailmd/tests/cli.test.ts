@@ -130,6 +130,24 @@ describe('cli', () => {
     });
   });
 
+  describe('--minify', () => {
+    it('produces a smaller HTML output than the default', () => {
+      const normal = run([FIXTURE]);
+      const minified = run([FIXTURE, '--minify']);
+      expect(normal.status).toBe(0);
+      expect(minified.status).toBe(0);
+      expect(minified.stdout.length).toBeLessThan(normal.stdout.length);
+      expect(minified.stdout).toContain('Order Confirmed');
+    });
+
+    it('works with the -m shorthand', () => {
+      const normal = run([FIXTURE]);
+      const minified = run([FIXTURE, '-m']);
+      expect(minified.status).toBe(0);
+      expect(minified.stdout.length).toBeLessThan(normal.stdout.length);
+    });
+  });
+
   describe('error handling', () => {
     it('exits with code 1 if the file does not exist', () => {
       const { stderr, status } = run(['nonexistent.md']);

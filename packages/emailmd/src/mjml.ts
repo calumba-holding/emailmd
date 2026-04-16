@@ -388,9 +388,27 @@ export function segmentsToMjml(segments: Segment[], theme: Theme): string {
   return segments.map((s) => segmentToMjml(s, theme)).join('\n    ');
 }
 
-export function renderMjml(segments: Segment[], theme: Theme, meta: WrapperMeta, wrapper: WrapperFn): string {
+export interface MjmlRenderOptions {
+  /** Minify the output HTML. Default: false. */
+  minify?: boolean;
+  /** Custom web fonts as a map of family name → URL (injected as <mj-font> tags). */
+  fonts?: Record<string, string>;
+}
+
+export async function renderMjml(
+  segments: Segment[],
+  theme: Theme,
+  meta: WrapperMeta,
+  wrapper: WrapperFn,
+  mjmlOptions?: MjmlRenderOptions,
+): Promise<string> {
   const mjmlDoc = wrapper(segments, theme, meta);
-  const { html, errors } = mjml2html(mjmlDoc);
+  const { html, errors } = await mjml2html(mjmlDoc, {
+    validationLevel: 'soft',
+    templateSyntax: 'mustache',
+    minify: mjmlOptions?.minify ?? false,
+    ...(mjmlOptions?.fonts ? { fonts: mjmlOptions.fonts } : {}),
+  });
   if (errors.length > 0) {
     console.warn('MJML compilation warnings:', errors);
   }

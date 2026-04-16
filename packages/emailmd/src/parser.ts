@@ -21,6 +21,12 @@ registerDirectives(md);
 // Matches template tags that should pass through markdown-it untouched.
 // Matches template tags that could break markdown-it link/URL parsing.
 // Excludes ERB/EJS (<% %>) since markdown-it HTML-encodes those safely.
+//
+// Note: this shielding protects tags from *markdown-it's* linkify/URL parsing,
+// which runs before MJML ever sees the document. MJML 5's `templateSyntax`
+// option (set in mjml.ts) protects `{{ }}` from MJML's PostCSS pass. The two
+// layers are complementary — both are needed to preserve `[text]({{ url }})`
+// end-to-end through the pipeline.
 const TEMPLATE_TAG_RE = /(\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\}|\$\{[\s\S]*?\}|%%[\s\S]*?%%)/g;
 
 function shieldTemplateTags(input: string): { text: string; tags: string[] } {
