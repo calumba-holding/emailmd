@@ -194,6 +194,38 @@ describe('render options', () => {
     expect(html).toContain('fonts.googleapis.com/css2?family=Inter');
   });
 
+  it('fonts map in frontmatter injects custom <mj-font>', async () => {
+    const md = `---
+fonts:
+  Inter: "https://fonts.googleapis.com/css2?family=Inter"
+  Roboto: "https://fonts.googleapis.com/css2?family=Roboto"
+---
+# Hello`;
+    const { html } = await render(md);
+    // MJML only injects <link> tags for fonts referenced in the compiled CSS.
+    // Both Inter and Roboto are in the default font stack.
+    expect(html).toContain('fonts.googleapis.com/css2?family=Inter');
+    expect(html).toContain('fonts.googleapis.com/css2?family=Roboto');
+  });
+
+  it('frontmatter fonts take precedence over options fonts on matching keys', async () => {
+    const md = `---
+fonts:
+  Inter: "https://frontmatter.example/Inter"
+---
+# Hello`;
+    const { html } = await render(md, {
+      fonts: {
+        Inter: 'https://options.example/Inter',
+        Roboto: 'https://options.example/Roboto',
+      },
+    });
+    expect(html).toContain('frontmatter.example/Inter');
+    expect(html).not.toContain('options.example/Inter');
+    // Non-overlapping keys from options still apply
+    expect(html).toContain('options.example/Roboto');
+  });
+
   it('beautify: true produces more structured output than the default', async () => {
     const md = '# Hello world\n\nA paragraph with some text.';
     const { html: baseline } = await render(md);

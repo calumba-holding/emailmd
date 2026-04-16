@@ -1,9 +1,9 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { lightTheme, darkTheme, type Theme } from "emailmd";
 import { HexColorPicker } from "react-colorful";
-import { Paintbrush, X, ChevronsUpDown } from "lucide-react";
+import { Paintbrush, X, ChevronsUpDown, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -34,7 +34,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   parseFrontmatter,
+  parseFontsMap,
   setFrontmatterKey,
+  setFontsMap,
   removeFrontmatterKey,
   removeAllThemeKeys,
 } from "./frontmatter-utils";
@@ -116,6 +118,7 @@ const FONT_OPTIONS: { label: string; value: string }[] = [
 
 export function ThemeModal({ markdown, onChange }: ThemeModalProps) {
   const fm = parseFrontmatter(markdown);
+  const fonts = parseFontsMap(markdown);
   const baseThemeName = fm.theme || "light";
   const baseTheme = baseThemeName === "dark" ? darkTheme : lightTheme;
 
@@ -137,6 +140,10 @@ export function ThemeModal({ markdown, onChange }: ThemeModalProps) {
     } else {
       onChange(setFrontmatterKey(markdown, "theme", value));
     }
+  }
+
+  function handleSetFonts(next: Record<string, string>) {
+    onChange(setFontsMap(markdown, next));
   }
 
   return (
@@ -235,6 +242,17 @@ export function ThemeModal({ markdown, onChange }: ThemeModalProps) {
                 ))}
               </div>
             </div>
+          </div>
+
+          <Separator />
+
+          <div>
+            <p className="text-sm font-medium mb-1">Custom Fonts</p>
+            <p className="text-xs text-muted-foreground mb-3">
+              Embed web fonts (e.g. Google Fonts). Use the family name in{" "}
+              <span className="font-mono">Font Family</span> above to apply it.
+            </p>
+            <CustomFontsField fonts={fonts} onChange={handleSetFonts} />
           </div>
         </div>
 
@@ -365,6 +383,113 @@ function FontFamilyField({
             <X className="size-3" />
           </Button>
         )}
+      </div>
+    </div>
+  );
+}
+
+function CustomFontsField({
+  fonts,
+  onChange,
+}: {
+  fonts: Record<string, string>;
+  onChange: (next: Record<string, string>) => void;
+}) {
+  const entries = Object.entries(fonts);
+  const [draftFamily, setDraftFamily] = useState("");
+  const [draftUrl, setDraftUrl] = useState("");
+
+  function updateEntry(oldFamily: string, newFamily: string, newUrl: string) {
+    const next: Record<string, string> = {};
+    for (const [f, u] of entries) {
+      if (f === oldFamily) {
+        if (newFamily) next[newFamily] = newUrl;
+      } else {
+        next[f] = u;
+      }
+    }
+    onChange(next);
+  }
+
+  function removeEntry(family: string) {
+    const next = { ...fonts };
+    delete next[family];
+    onChange(next);
+  }
+
+  function addEntry() {
+    const family = draftFamily.trim();
+    const url = draftUrl.trim();
+    if (!family || !url) return;
+    onChange({ ...fonts, [family]: url });
+    setDraftFamily("");
+    setDraftUrl("");
+  }
+
+  return (
+    <div className="space-y-2">
+      {entries.length > 0 && (
+        <div className="space-y-1.5">
+          {entries.map(([family, url]) => (
+            <div key={family} className="flex items-center gap-1.5">
+              <Input
+                value={family}
+                onChange={(e) => updateEntry(family, e.target.value, url)}
+                placeholder="Family"
+                className="text-xs h-8 w-32 shrink-0"
+              />
+              <Input
+                value={url}
+                onChange={(e) => updateEntry(family, family, e.target.value)}
+                placeholder="https://fonts.googleapis.com/..."
+                className="text-xs h-8 font-mono"
+              />
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => removeEntry(family)}
+                className="shrink-0"
+              >
+                <X className="size-3" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="flex items-center gap-1.5">
+        <Input
+          value={draftFamily}
+          onChange={(e) => setDraftFamily(e.target.value)}
+          placeholder="Family (e.g. Inter)"
+          className="text-xs h-8 w-32 shrink-0"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addEntry();
+            }
+          }}
+        />
+        <Input
+          value={draftUrl}
+          onChange={(e) => setDraftUrl(e.target.value)}
+          placeholder="https://fonts.googleapis.com/css2?family=Inter"
+          className="text-xs h-8 font-mono"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addEntry();
+            }
+          }}
+        />
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={addEntry}
+          disabled={!draftFamily.trim() || !draftUrl.trim()}
+          className="shrink-0"
+        >
+          <Plus className="size-3" />
+        </Button>
       </div>
     </div>
   );

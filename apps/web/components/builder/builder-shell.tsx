@@ -46,6 +46,7 @@ export function BuilderShell({
     () => initialMarkdown ?? loadDraft() ?? DEFAULT_MARKDOWN
   );
   const [html, setHtml] = useState("");
+  const [minifiedHtml, setMinifiedHtml] = useState("");
   const [text, setText] = useState("");
   const [editorOpen, setEditorOpen] = useState(true);
   const [lastSaved, setLastSaved] = useState<number | null>(null);
@@ -76,10 +77,14 @@ export function BuilderShell({
     debounceRef.current = setTimeout(() => {
       (async () => {
         try {
-          const result = await render(markdown);
+          const [pretty, minified] = await Promise.all([
+            render(markdown),
+            render(markdown, { minify: true, sanitizeStyles: true }),
+          ]);
           if (cancelled) return;
-          setHtml(result.html);
-          setText(result.text);
+          setHtml(pretty.html);
+          setMinifiedHtml(minified.html);
+          setText(pretty.text);
         } catch {
           // keep previous output on error
         }
@@ -131,7 +136,7 @@ export function BuilderShell({
       </div>
 
       {/* Output panel — always visible, full-width on mobile */}
-      <OutputPane html={html} text={text} />
+      <OutputPane html={html} minifiedHtml={minifiedHtml} text={text} />
 
       {/* Mobile floating edit button */}
       {!editorOpen && (

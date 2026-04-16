@@ -23,10 +23,12 @@ const THEME_KEYS = new Set([
   "content_width",
   "border_radius",
   "theme",
+  "fonts",
 ]);
 
 /**
  * Parse flat YAML frontmatter from a markdown string into key-value pairs.
+ * Skips indented lines (children of block-valued keys like `fonts:`).
  */
 export function parseFrontmatter(
   markdown: string
@@ -36,6 +38,8 @@ export function parseFrontmatter(
 
   const result: Record<string, string> = {};
   for (const line of match[1].split("\n")) {
+    // Skip indented lines — they belong to a block-valued parent key
+    if (/^\s/.test(line)) continue;
     const idx = line.indexOf(":");
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
@@ -50,6 +54,51 @@ export function parseFrontmatter(
     if (key) result[key] = value;
   }
   return result;
+}
+
+/**
+ * Parse the nested `fonts:` map from frontmatter.
+ * Returns `{ familyName: url, ... }` or `{}` if not present.
+ */
+export function parseFontsMap(markdown: string): Record<string, string> {
+  const match = markdown.match(FRONTMATTER_RE);
+  if (!match) return {};
+
+  const lines = match[1].split("\n");
+  const fonts: Record<string, string> = {};
+  let inFontsBlock = false;
+
+  for (const line of lines) {
+    if (!inFontsBlock) {
+      if (/^fonts\s*:\s*$/.test(line)) {
+        inFontsBlock = true;
+      }
+      continue;
+    }
+    // Exit on any non-indented, non-empty line
+    if (line.trim() === "") continue;
+    if (!/^\s/.test(line)) break;
+
+    const idx = line.indexOf(":");
+    if (idx === -1) continue;
+    let family = line.slice(0, idx).trim();
+    let url = line.slice(idx + 1).trim();
+    family = stripQuotes(family);
+    url = stripQuotes(url);
+    if (family && url) fonts[family] = url;
+  }
+
+  return fonts;
+}
+
+function stripQuotes(s: string): string {
+  if (
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith("'") && s.endsWith("'"))
+  ) {
+    return s.slice(1, -1);
+  }
+  return s;
 }
 
 /**
@@ -91,6 +140,7 @@ export function setFrontmatterKey(
 
 /**
  * Remove a key from the YAML frontmatter.
+ * Also removes indented children when the key is a block-valued map (e.g. `fonts:`).
  * Removes the entire frontmatter block if no keys remain.
  */
 export function removeFrontmatterKey(
@@ -100,15 +150,27 @@ export function removeFrontmatterKey(
   const match = markdown.match(FRONTMATTER_RE);
   if (!match) return markdown;
 
-  const lines = match[1]
-    .split("\n")
-    .filter((line) => {
-      const idx = line.indexOf(":");
-      if (idx === -1) return true;
-      return line.slice(0, idx).trim() !== key;
-    });
+  const input = match[1].split("\n");
+  const out: string[] = [];
+  let skippingBlock = false;
 
-  const remaining = lines.filter((l) => l.trim() !== "");
+  for (const line of input) {
+    if (skippingBlock) {
+      // Keep skipping indented children; stop on next top-level line
+      if (line.trim() === "" || /^\s/.test(line)) continue;
+      skippingBlock = false;
+    }
+    const idx = line.indexOf(":");
+    if (idx !== -1 && line.slice(0, idx).trim() === key) {
+      const value = line.slice(idx + 1).trim();
+      // Block-valued key (e.g. `fonts:`) — also strip its indented children
+      if (value === "") skippingBlock = true;
+      continue;
+    }
+    out.push(line);
+  }
+
+  const remaining = out.filter((l) => l.trim() !== "");
 
   if (remaining.length === 0) {
     // Remove entire frontmatter block and any leading newline
@@ -120,22 +182,66 @@ export function removeFrontmatterKey(
 }
 
 /**
+ * Replace (or insert) the `fonts:` nested map in frontmatter.
+ * Pass an empty object to remove the block entirely.
+ */
+export function setFontsMap(
+  markdown: string,
+  fonts: Record<string, string>
+): string {
+  const entries = Object.entries(fonts).filter(([f, u]) => f && u);
+  const cleared = removeFrontmatterKey(markdown, "fonts");
+  if (entries.length === 0) return cleared;
+
+  const block = [
+    "fonts:",
+    ...entries.map(([family, url]) => `  ${quoteYamlKey(family)}: "${url.replace(/"/g, '\\"')}"`),
+  ].join("\n");
+
+  const match = cleared.match(FRONTMATTER_RE);
+  if (!match) {
+    return `---\n${block}\n---\n${cleared}`;
+  }
+  const newBlock = `---\n${match[1]}\n${block}\n---`;
+  return cleared.replace(FRONTMATTER_RE, newBlock);
+}
+
+function quoteYamlKey(key: string): string {
+  // Quote if it contains special chars or whitespace
+  if (/^[a-zA-Z0-9_-]+$/.test(key)) return key;
+  return `"${key.replace(/"/g, '\\"')}"`;
+}
+
+/**
  * Remove all theme-related keys from frontmatter, preserving non-theme keys.
+ * Also strips indented children of any block-valued theme key (e.g. `fonts:`).
  */
 export function removeAllThemeKeys(markdown: string): string {
   const match = markdown.match(FRONTMATTER_RE);
   if (!match) return markdown;
 
-  const lines = match[1]
-    .split("\n")
-    .filter((line) => {
-      const idx = line.indexOf(":");
-      if (idx === -1) return true;
-      const key = line.slice(0, idx).trim();
-      return !THEME_KEYS.has(key);
-    });
+  const input = match[1].split("\n");
+  const out: string[] = [];
+  let skippingBlock = false;
 
-  const remaining = lines.filter((l) => l.trim() !== "");
+  for (const line of input) {
+    if (skippingBlock) {
+      if (line.trim() === "" || /^\s/.test(line)) continue;
+      skippingBlock = false;
+    }
+    const idx = line.indexOf(":");
+    if (idx !== -1) {
+      const key = line.slice(0, idx).trim();
+      if (THEME_KEYS.has(key)) {
+        const value = line.slice(idx + 1).trim();
+        if (value === "") skippingBlock = true;
+        continue;
+      }
+    }
+    out.push(line);
+  }
+
+  const remaining = out.filter((l) => l.trim() !== "");
 
   if (remaining.length === 0) {
     return markdown.replace(/^---\n[\s\S]*?\n---\n?/, "");

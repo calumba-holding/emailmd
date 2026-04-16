@@ -7,7 +7,7 @@ export { buildHead, segmentsToMjml } from './mjml.js';
 export { defaultWrapper } from './wrappers/default.js';
 
 import { mergeTheme, resolveBaseTheme, type Theme } from './theme.js';
-import { extractFrontmatter, frontmatterToThemeOverrides } from './frontmatter.js';
+import { extractFrontmatter, frontmatterToThemeOverrides, frontmatterToFonts } from './frontmatter.js';
 import { parseMarkdown } from './parser.js';
 import { segment } from './segmenter.js';
 import { renderMjml, type WrapperFn, type WrapperMeta } from './mjml.js';
@@ -22,7 +22,10 @@ export interface RenderOptions {
   wrapper?: 'default' | WrapperFn;
   /** Minify the output HTML. Default: `false`. Useful for staying under Gmail's 102KB clip limit. */
   minify?: boolean;
-  /** Custom web fonts as a map of family name → URL (rendered as `<mj-font>` tags). */
+  /**
+   * Custom web fonts as a map of family name → URL (rendered as `<mj-font>` tags).
+   * Frontmatter `fonts:` entries merge on top of this map (per-family, frontmatter wins).
+   */
   fonts?: Record<string, string>;
   /** MJML validation level. Default: `'soft'`. */
   validationLevel?: 'skip' | 'soft' | 'strict';
@@ -85,9 +88,14 @@ export async function render(markdown: string, options?: RenderOptions): Promise
     preheader: meta.preheader as string | undefined,
   };
 
+  const frontmatterFonts = frontmatterToFonts(meta);
+  const mergedFonts = options?.fonts || frontmatterFonts
+    ? { ...options?.fonts, ...frontmatterFonts }
+    : undefined;
+
   const html = await renderMjml(segments, theme, wrapperMeta, wrapperFn, {
     minify: options?.minify,
-    fonts: options?.fonts,
+    fonts: mergedFonts,
     validationLevel: options?.validationLevel,
     templateSyntax: options?.templateSyntax,
     sanitizeStyles: options?.sanitizeStyles,

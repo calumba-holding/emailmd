@@ -35,6 +35,25 @@ const { html } = await render(markdown, {
 
 You can also activate it per-email via frontmatter — see [Frontmatter](/docs/frontmatter).
 
+## Web Fonts
+
+To use a font beyond the web-safe stack (e.g. Google Fonts), pass a `fonts` map alongside `theme`. Each entry renders as an `<mj-font>` tag, loading the stylesheet in clients that support embedded web fonts:
+
+```typescript
+const { html } = await render(markdown, {
+  fonts: {
+    Inter: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
+  },
+  theme: {
+    fontFamily: 'Inter, sans-serif',
+  },
+});
+```
+
+The font family still has to be named in `fontFamily` to actually apply — `fonts` only ships the stylesheet link. MJML drops unused entries automatically.
+
+The same thing works from markdown with a nested `fonts:` map in frontmatter. See [Frontmatter → Custom Fonts](/docs/frontmatter#custom-fonts).
+
 ## All Theme Options
 
 | Key | Light Default | Dark Default | Description |
