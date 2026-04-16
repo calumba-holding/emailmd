@@ -193,4 +193,33 @@ describe('render options', () => {
     });
     expect(html).toContain('fonts.googleapis.com/css2?family=Inter');
   });
+
+  it('beautify: true produces more structured output than the default', async () => {
+    const md = '# Hello world\n\nA paragraph with some text.';
+    const { html: baseline } = await render(md);
+    const { html: beautified } = await render(md, { beautify: true });
+    expect(beautified.split('\n').length).toBeGreaterThan(baseline.split('\n').length);
+  });
+
+  it('validationLevel: "strict" renders valid markdown without throwing', async () => {
+    const md = '# Hello\n\nA paragraph.';
+    const { html } = await render(md, { validationLevel: 'strict' });
+    expect(html).toContain('<!doctype html>');
+    expect(html).toContain('Hello');
+  });
+
+  it('sanitizeStyles: true renders without throwing when combined with minify', async () => {
+    const md = '# Hello\n\nA paragraph.';
+    const { html } = await render(md, { minify: true, sanitizeStyles: true });
+    expect(html).toContain('Hello');
+  });
+
+  it('templateSyntax accepts custom delimiters without throwing', async () => {
+    const md = '# Hello\n\nA paragraph.';
+    const { html } = await render(md, {
+      templateSyntax: [{ prefix: '<%', suffix: '%>' }],
+    });
+    expect(html).toContain('<!doctype html>');
+    expect(html).toContain('Hello');
+  });
 });

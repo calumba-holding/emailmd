@@ -148,6 +148,24 @@ describe('cli', () => {
     });
   });
 
+  describe('--beautify', () => {
+    it('produces more lines of output than the default', () => {
+      const normal = run([FIXTURE]);
+      const beautified = run([FIXTURE, '--beautify']);
+      expect(normal.status).toBe(0);
+      expect(beautified.status).toBe(0);
+      expect(beautified.stdout.split('\n').length).toBeGreaterThan(normal.stdout.split('\n').length);
+      expect(beautified.stdout).toContain('Order Confirmed');
+    });
+
+    it('works with the -b shorthand', () => {
+      const normal = run([FIXTURE]);
+      const beautified = run([FIXTURE, '-b']);
+      expect(beautified.status).toBe(0);
+      expect(beautified.stdout.split('\n').length).toBeGreaterThan(normal.stdout.split('\n').length);
+    });
+  });
+
   describe('error handling', () => {
     it('exits with code 1 if the file does not exist', () => {
       const { stderr, status } = run(['nonexistent.md']);

@@ -27,15 +27,23 @@ const { html, text, meta } = await render("# Hello");
   wrapper?: 'default' | WrapperFn;
   minify?: boolean;
   fonts?: Record<string, string>;
+  validationLevel?: 'skip' | 'soft' | 'strict';
+  templateSyntax?: Array<{ prefix: string; suffix: string }>;
+  sanitizeStyles?: boolean;
+  beautify?: boolean;
 }
 ```
 
-| Option    | Type                        | Description                                                    |
-| --------- | --------------------------- | -------------------------------------------------------------- |
-| `theme`   | `Partial<Theme>`            | Override default theme values                                  |
-| `wrapper` | `'default' \| WrapperFn`    | Custom email wrapper function                                  |
-| `minify`  | `boolean`                   | Minify output HTML. Default `false`.                           |
-| `fonts`   | `Record<string, string>`    | Custom web fonts: `{ [family]: url }` rendered as `<mj-font>`. |
+| Option            | Type                                          | Description                                                                             |
+| ----------------- | --------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `theme`           | `Partial<Theme>`                              | Override default theme values                                                           |
+| `wrapper`         | `'default' \| WrapperFn`                      | Custom email wrapper function                                                           |
+| `minify`          | `boolean`                                     | Minify output HTML. Default `false`.                                                    |
+| `fonts`           | `Record<string, string>`                      | Custom web fonts: `{ [family]: url }` rendered as `<mj-font>`.                          |
+| `validationLevel` | `'skip' \| 'soft' \| 'strict'`                | MJML validation level. Default `'soft'`.                                                |
+| `templateSyntax`  | `Array<{ prefix: string; suffix: string }>`   | Template delimiters preserved during compilation. Default `[{{...}}, [[...]]]`.         |
+| `sanitizeStyles`  | `boolean`                                     | Sanitize template variables inside CSS before minification. Requires `minify: true`.    |
+| `beautify`        | `boolean`                                     | Pretty-print output HTML. Ignored when `minify: true`. Default `false`.                 |
 
 ## `RenderResult`
 

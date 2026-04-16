@@ -24,6 +24,20 @@ export interface RenderOptions {
   minify?: boolean;
   /** Custom web fonts as a map of family name → URL (rendered as `<mj-font>` tags). */
   fonts?: Record<string, string>;
+  /** MJML validation level. Default: `'soft'`. */
+  validationLevel?: 'skip' | 'soft' | 'strict';
+  /**
+   * Custom template delimiters preserved during compilation. Passed through to MJML.
+   * Default: `[{ prefix: '{{', suffix: '}}' }, { prefix: '[[', suffix: ']]' }]`.
+   */
+  templateSyntax?: Array<{ prefix: string; suffix: string }>;
+  /**
+   * Sanitize template variables inside CSS before minification.
+   * Only takes effect when `minify` is `true`. Default: `false`.
+   */
+  sanitizeStyles?: boolean;
+  /** Pretty-print the output HTML. Ignored when `minify` is `true`. Default: `false`. */
+  beautify?: boolean;
 }
 
 /** Object returned by {@link render}. */
@@ -74,6 +88,10 @@ export async function render(markdown: string, options?: RenderOptions): Promise
   const html = await renderMjml(segments, theme, wrapperMeta, wrapperFn, {
     minify: options?.minify,
     fonts: options?.fonts,
+    validationLevel: options?.validationLevel,
+    templateSyntax: options?.templateSyntax,
+    sanitizeStyles: options?.sanitizeStyles,
+    beautify: options?.beautify,
   });
   const text = toPlainText(parsedHtml);
 

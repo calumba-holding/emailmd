@@ -61,7 +61,9 @@ declare module 'mjml' {
     minify?: boolean;
     fonts?: Record<string, string>;
     validationLevel?: 'skip' | 'soft' | 'strict';
-    templateSyntax?: string;
+    templateSyntax?: Array<{ prefix: string; suffix: string }>;
+    sanitizeStyles?: boolean;
+    beautify?: boolean;
   }
   export default function mjml2html(
     input: string,
