@@ -46,6 +46,7 @@ export function BuilderShell({
     () => initialMarkdown ?? loadDraft() ?? DEFAULT_MARKDOWN
   );
   const [html, setHtml] = useState("");
+  const [minifiedHtml, setMinifiedHtml] = useState("");
   const [text, setText] = useState("");
   const [editorOpen, setEditorOpen] = useState(true);
   const [lastSaved, setLastSaved] = useState<number | null>(null);
@@ -72,16 +73,27 @@ export function BuilderShell({
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
+    let cancelled = false;
     debounceRef.current = setTimeout(() => {
-      try {
-        const result = render(markdown);
-        setHtml(result.html);
-        setText(result.text);
-      } catch {
-        // keep previous output on error
-      }
+      (async () => {
+        try {
+          const [pretty, minified] = await Promise.all([
+            render(markdown),
+            render(markdown, { minify: true, sanitizeStyles: true }),
+          ]);
+          if (cancelled) return;
+          setHtml(pretty.html);
+          setMinifiedHtml(minified.html);
+          setText(pretty.text);
+        } catch {
+          // keep previous output on error
+        }
+      })();
     }, 150);
-    return () => clearTimeout(debounceRef.current);
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceRef.current);
+    };
   }, [markdown]);
 
   return (
@@ -124,7 +136,7 @@ export function BuilderShell({
       </div>
 
       {/* Output panel — always visible, full-width on mobile */}
-      <OutputPane html={html} text={text} />
+      <OutputPane html={html} minifiedHtml={minifiedHtml} text={text} />
 
       {/* Mobile floating edit button */}
       {!editorOpen && (

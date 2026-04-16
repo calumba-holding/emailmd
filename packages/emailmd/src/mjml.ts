@@ -388,9 +388,37 @@ export function segmentsToMjml(segments: Segment[], theme: Theme): string {
   return segments.map((s) => segmentToMjml(s, theme)).join('\n    ');
 }
 
-export function renderMjml(segments: Segment[], theme: Theme, meta: WrapperMeta, wrapper: WrapperFn): string {
+export interface MjmlRenderOptions {
+  /** Minify the output HTML. Default: false. */
+  minify?: boolean;
+  /** Custom web fonts as a map of family name → URL (injected as <mj-font> tags). */
+  fonts?: Record<string, string>;
+  /** MJML validation level. Default: `'soft'`. */
+  validationLevel?: 'skip' | 'soft' | 'strict';
+  /** Custom template delimiters preserved during compilation. Default: `[{prefix:'{{',suffix:'}}'},{prefix:'[[',suffix:']]'}]`. */
+  templateSyntax?: Array<{ prefix: string; suffix: string }>;
+  /** Sanitize template variables inside CSS before minification. Only takes effect when `minify: true`. Default: false. */
+  sanitizeStyles?: boolean;
+  /** Pretty-print the output HTML. Ignored when `minify: true`. Default: false. */
+  beautify?: boolean;
+}
+
+export async function renderMjml(
+  segments: Segment[],
+  theme: Theme,
+  meta: WrapperMeta,
+  wrapper: WrapperFn,
+  mjmlOptions?: MjmlRenderOptions,
+): Promise<string> {
   const mjmlDoc = wrapper(segments, theme, meta);
-  const { html, errors } = mjml2html(mjmlDoc);
+  const { html, errors } = await mjml2html(mjmlDoc, {
+    minify: mjmlOptions?.minify ?? false,
+    ...(mjmlOptions?.fonts ? { fonts: mjmlOptions.fonts } : {}),
+    ...(mjmlOptions?.validationLevel ? { validationLevel: mjmlOptions.validationLevel } : {}),
+    ...(mjmlOptions?.templateSyntax ? { templateSyntax: mjmlOptions.templateSyntax } : {}),
+    ...(mjmlOptions?.sanitizeStyles !== undefined ? { sanitizeStyles: mjmlOptions.sanitizeStyles } : {}),
+    ...(mjmlOptions?.beautify !== undefined ? { beautify: mjmlOptions.beautify } : {}),
+  });
   if (errors.length > 0) {
     console.warn('MJML compilation warnings:', errors);
   }

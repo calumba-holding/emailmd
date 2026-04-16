@@ -7,7 +7,7 @@ export { buildHead, segmentsToMjml } from './mjml.js';
 export { defaultWrapper } from './wrappers/default.js';
 
 import { mergeTheme, resolveBaseTheme, type Theme } from './theme.js';
-import { extractFrontmatter, frontmatterToThemeOverrides } from './frontmatter.js';
+import { extractFrontmatter, frontmatterToThemeOverrides, frontmatterToFonts } from './frontmatter.js';
 import { parseMarkdown } from './parser.js';
 import { segment } from './segmenter.js';
 import { renderMjml, type WrapperFn, type WrapperMeta } from './mjml.js';
@@ -20,6 +20,27 @@ export interface RenderOptions {
   theme?: Partial<Theme>;
   /** Wrapper template. Built-in names or a custom {@link WrapperFn}. */
   wrapper?: 'default' | WrapperFn;
+  /** Minify the output HTML. Default: `false`. Useful for staying under Gmail's 102KB clip limit. */
+  minify?: boolean;
+  /**
+   * Custom web fonts as a map of family name → URL (rendered as `<mj-font>` tags).
+   * Frontmatter `fonts:` entries merge on top of this map (per-family, frontmatter wins).
+   */
+  fonts?: Record<string, string>;
+  /** MJML validation level. Default: `'soft'`. */
+  validationLevel?: 'skip' | 'soft' | 'strict';
+  /**
+   * Custom template delimiters preserved during compilation. Passed through to MJML.
+   * Default: `[{ prefix: '{{', suffix: '}}' }, { prefix: '[[', suffix: ']]' }]`.
+   */
+  templateSyntax?: Array<{ prefix: string; suffix: string }>;
+  /**
+   * Sanitize template variables inside CSS before minification.
+   * Only takes effect when `minify` is `true`. Default: `false`.
+   */
+  sanitizeStyles?: boolean;
+  /** Pretty-print the output HTML. Ignored when `minify` is `true`. Default: `false`. */
+  beautify?: boolean;
 }
 
 /** Object returned by {@link render}. */
@@ -44,7 +65,7 @@ export interface RenderResult {
  *
  * @example
  * ```ts
- * const { html, text, meta } = render(`
+ * const { html, text, meta } = await render(`
  * ---
  * preheader: Welcome!
  * ---
@@ -53,7 +74,7 @@ export interface RenderResult {
  * `);
  * ```
  */
-export function render(markdown: string, options?: RenderOptions): RenderResult {
+export async function render(markdown: string, options?: RenderOptions): Promise<RenderResult> {
   const { meta, content } = extractFrontmatter(markdown);
   const baseTheme = resolveBaseTheme(meta.theme as string | undefined);
   const frontmatterOverrides = frontmatterToThemeOverrides(meta);
@@ -67,7 +88,19 @@ export function render(markdown: string, options?: RenderOptions): RenderResult 
     preheader: meta.preheader as string | undefined,
   };
 
-  const html = renderMjml(segments, theme, wrapperMeta, wrapperFn);
+  const frontmatterFonts = frontmatterToFonts(meta);
+  const mergedFonts = options?.fonts || frontmatterFonts
+    ? { ...options?.fonts, ...frontmatterFonts }
+    : undefined;
+
+  const html = await renderMjml(segments, theme, wrapperMeta, wrapperFn, {
+    minify: options?.minify,
+    fonts: mergedFonts,
+    validationLevel: options?.validationLevel,
+    templateSyntax: options?.templateSyntax,
+    sanitizeStyles: options?.sanitizeStyles,
+    beautify: options?.beautify,
+  });
   const text = toPlainText(parsedHtml);
 
   return { html, text, meta: { ...meta } };

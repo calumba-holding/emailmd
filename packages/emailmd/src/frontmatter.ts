@@ -54,3 +54,17 @@ export function frontmatterToThemeOverrides(meta: Record<string, unknown>): Part
   }
   return overrides as Partial<Theme>;
 }
+
+/**
+ * Extract the nested `fonts:` map from frontmatter, if present.
+ * Silently ignores non-string values so malformed entries don't crash rendering.
+ */
+export function frontmatterToFonts(meta: Record<string, unknown>): Record<string, string> | undefined {
+  const raw = meta.fonts;
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const fonts: Record<string, string> = {};
+  for (const [family, url] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof url === 'string' && family) fonts[family] = url;
+  }
+  return Object.keys(fonts).length > 0 ? fonts : undefined;
+}

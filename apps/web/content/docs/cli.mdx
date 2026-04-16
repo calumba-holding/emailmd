@@ -29,12 +29,14 @@ If no file is given, the CLI reads from stdin.
 
 ## Options
 
-| Option             | Description                              |
-| ------------------ | ---------------------------------------- |
-| `-o, --output <f>` | Write output to a file instead of stdout |
-| `-t, --text`       | Output plain text instead of HTML        |
-| `-h, --help`       | Show help                                |
-| `-v, --version`    | Show version number                      |
+| Option             | Description                                       |
+| ------------------ | ------------------------------------------------- |
+| `-o, --output <f>` | Write output to a file instead of stdout          |
+| `-t, --text`       | Output plain text instead of HTML                 |
+| `-m, --minify`     | Minify the HTML output                            |
+| `-b, --beautify`   | Pretty-print the HTML output (ignored with `-m`)  |
+| `-h, --help`       | Show help                                         |
+| `-v, --version`    | Show version number                               |
 
 ## Examples
 
@@ -54,6 +56,18 @@ Get the plain text version (for the `text/plain` MIME part):
 
 ```bash
 emailmd input.md --text
+```
+
+Minify the HTML output (useful for staying under Gmail's 102KB clip limit):
+
+```bash
+emailmd input.md --minify -o output.html
+```
+
+Pretty-print the HTML output (handy for reading it straight in the terminal):
+
+```bash
+emailmd input.md --beautify
 ```
 
 Pipe from another command:

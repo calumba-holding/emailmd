@@ -10,10 +10,10 @@ const ALIGNED_TABLE = `| Left | Center | Right |
 | :--- | :----: | ----: |
 | a | b | c |`;
 
-describe('table support', () => {
-  describe('basic rendering', () => {
-    it('renders a simple table with all data visible', () => {
-      const { html } = render(SIMPLE_TABLE);
+describe('table support', async () => {
+  describe('basic rendering', async () => {
+    it('renders a simple table with all data visible', async () => {
+      const { html } = await render(SIMPLE_TABLE);
       expect(html).toContain('Name');
       expect(html).toContain('Age');
       expect(html).toContain('Alice');
@@ -22,72 +22,72 @@ describe('table support', () => {
       expect(html).toContain('25');
     });
 
-    it('contains no MJML tags in output', () => {
-      const { html } = render(SIMPLE_TABLE);
+    it('contains no MJML tags in output', async () => {
+      const { html } = await render(SIMPLE_TABLE);
       expect(html).not.toMatch(/<mj-/);
     });
 
-    it('contains no EMAILMD markers in output', () => {
-      const { html } = render(SIMPLE_TABLE);
+    it('contains no EMAILMD markers in output', async () => {
+      const { html } = await render(SIMPLE_TABLE);
       expect(html).not.toContain('EMAILMD:');
     });
   });
 
-  describe('column alignment', () => {
-    it('preserves left alignment', () => {
+  describe('column alignment', async () => {
+    it('preserves left alignment', async () => {
       const md = '| Name |\n| :--- |\n| Alice |';
-      const { html } = render(md);
+      const { html } = await render(md);
       expect(html).toContain('text-align:left');
     });
 
-    it('preserves center alignment', () => {
+    it('preserves center alignment', async () => {
       const md = '| Name |\n| :---: |\n| Alice |';
-      const { html } = render(md);
+      const { html } = await render(md);
       expect(html).toContain('text-align:center');
     });
 
-    it('preserves right alignment', () => {
+    it('preserves right alignment', async () => {
       const md = '| Name |\n| ---: |\n| Alice |';
-      const { html } = render(md);
+      const { html } = await render(md);
       expect(html).toContain('text-align:right');
     });
 
-    it('handles mixed alignments', () => {
-      const { html } = render(ALIGNED_TABLE);
+    it('handles mixed alignments', async () => {
+      const { html } = await render(ALIGNED_TABLE);
       expect(html).toContain('text-align:left');
       expect(html).toContain('text-align:center');
       expect(html).toContain('text-align:right');
     });
   });
 
-  describe('styling', () => {
-    it('applies header border styling', () => {
-      const { html } = render(SIMPLE_TABLE);
+  describe('styling', async () => {
+    it('applies header border styling', async () => {
+      const { html } = await render(SIMPLE_TABLE);
       expect(html).toContain('border-bottom');
     });
 
-    it('uses theme colors', () => {
-      const { html } = render(SIMPLE_TABLE);
+    it('uses theme colors', async () => {
+      const { html } = await render(SIMPLE_TABLE);
       expect(html).toContain('#71717a'); // default bodyColor
     });
   });
 
-  describe('with surrounding content', () => {
-    it('renders text before and after a table', () => {
+  describe('with surrounding content', async () => {
+    it('renders text before and after a table', async () => {
       const md = `# Welcome
 
 ${SIMPLE_TABLE}
 
 More content below.`;
-      const { html } = render(md);
+      const { html } = await render(md);
       expect(html).toContain('Welcome');
       expect(html).toContain('Alice');
       expect(html).toContain('More content below.');
     });
 
-    it('handles multiple tables', () => {
+    it('handles multiple tables', async () => {
       const md = `| A |\n| - |\n| 1 |\n\n| B |\n| - |\n| 2 |`;
-      const { html } = render(md);
+      const { html } = await render(md);
       expect(html).toContain('A');
       expect(html).toContain('1');
       expect(html).toContain('B');
@@ -96,9 +96,9 @@ More content below.`;
   });
 });
 
-describe('table plain text output', () => {
-  it('converts a table to aligned text', () => {
-    const { text } = render(SIMPLE_TABLE);
+describe('table plain text output', async () => {
+  it('converts a table to aligned text', async () => {
+    const { text } = await render(SIMPLE_TABLE);
     expect(text).toContain('Name');
     expect(text).toContain('Alice');
     expect(text).toContain('30');
@@ -106,18 +106,18 @@ describe('table plain text output', () => {
     expect(text).toContain('25');
   });
 
-  it('includes a separator after the header', () => {
-    const { text } = render(SIMPLE_TABLE);
+  it('includes a separator after the header', async () => {
+    const { text } = await render(SIMPLE_TABLE);
     expect(text).toContain('---');
   });
 
-  it('contains no HTML tags', () => {
-    const { text } = render(SIMPLE_TABLE);
+  it('contains no HTML tags', async () => {
+    const { text } = await render(SIMPLE_TABLE);
     expect(text).not.toMatch(/<[^>]+>/);
   });
 
-  it('aligns columns with padding', () => {
-    const { text } = render(SIMPLE_TABLE);
+  it('aligns columns with padding', async () => {
+    const { text } = await render(SIMPLE_TABLE);
     const lines = text.split('\n').filter((l) => l.trim());
     const aliceLine = lines.find((l) => l.includes('Alice'));
     const bobLine = lines.find((l) => l.includes('Bob'));

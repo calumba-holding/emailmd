@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render } from '../src/index.js';
@@ -6,7 +6,11 @@ import { render } from '../src/index.js';
 const fixture = readFileSync(resolve(__dirname, 'fixtures/directives.md'), 'utf-8');
 
 describe('integration: full email with directives and buttons', () => {
-  const { html } = render(fixture);
+  let html: string;
+
+  beforeAll(async () => {
+    ({ html } = await render(fixture));
+  });
 
   it('produces a complete HTML document', () => {
     expect(html).toContain('<!doctype html>');
@@ -60,7 +64,11 @@ describe('integration: full email with directives and buttons', () => {
 const newsletterFixture = readFileSync(resolve(__dirname, 'fixtures/newsletter.md'), 'utf-8');
 
 describe('integration: default wrapper with footer directive', () => {
-  const { html } = render(newsletterFixture);
+  let html: string;
+
+  beforeAll(async () => {
+    ({ html } = await render(newsletterFixture));
+  });
 
   it('produces a complete HTML document', () => {
     expect(html).toContain('<!doctype html>');
@@ -92,7 +100,11 @@ describe('integration: default wrapper with footer directive', () => {
 const transactionalFixture = readFileSync(resolve(__dirname, 'fixtures/transactional.md'), 'utf-8');
 
 describe('integration: transactional email', () => {
-  const { html } = render(transactionalFixture);
+  let html: string;
+
+  beforeAll(async () => {
+    ({ html } = await render(transactionalFixture));
+  });
 
   it('produces a complete HTML document', () => {
     expect(html).toContain('<!doctype html>');

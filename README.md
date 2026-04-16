@@ -17,7 +17,7 @@ npm install emailmd
 ```typescript
 import { render } from "emailmd";
 
-const { html, text } = render(`
+const { html, text } = await render(`
 # Welcome!
 
 Thanks for signing up.
@@ -28,6 +28,8 @@ Thanks for signing up.
 // html → complete email-safe HTML
 // text → plain text version for text/plain MIME part
 ```
+
+> **v0.3.0 migration:** `render()` is now async. Update calls from `render(md)` to `await render(md)`. Requires Node 20+ (MJML 5).
 
 ## CLI
 
