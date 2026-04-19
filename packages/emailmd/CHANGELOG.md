@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — 2026-04-19
+
+### Fixed
+- Invalid YAML in a frontmatter block no longer throws from `extractFrontmatter()` / `render()`. The body renders with empty meta, and the parse error is surfaced on the result instead ([#16](https://github.com/unmta/emailmd/issues/16)).
+
+### Added
+- `FrontmatterResult.error?: Error` — set when a frontmatter block was detected but could not be parsed as YAML.
+- `RenderResult.warnings?: RenderWarning[]` — non-fatal issues (currently just `stage: 'frontmatter'`) surfaced without throwing, so callers can display them alongside a working preview. Room to grow as more stages emit warnings.
+- Builder UI now shows an inline red banner when a render warning or error occurs, instead of silently freezing the preview.
+
 ## [0.3.0] — 2026-04-16
 
 ### Changed

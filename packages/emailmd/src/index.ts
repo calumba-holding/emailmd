@@ -43,6 +43,20 @@ export interface RenderOptions {
   beautify?: boolean;
 }
 
+/**
+ * Non-fatal issue encountered during {@link render}. Rendering still produces
+ * valid `html`/`text` output; warnings let callers surface parse problems to
+ * end users (e.g. a banner in an editor UI).
+ */
+export interface RenderWarning {
+  /** Which render stage produced the warning. */
+  stage: 'frontmatter';
+  /** Human-readable message. */
+  message: string;
+  /** Original `Error`, when one was thrown internally. */
+  cause?: Error;
+}
+
 /** Object returned by {@link render}. */
 export interface RenderResult {
   /** Complete email-safe HTML document. */
@@ -54,6 +68,11 @@ export interface RenderResult {
     preheader?: string;
     [key: string]: unknown;
   };
+  /**
+   * Non-fatal issues encountered while rendering. Omitted when empty.
+   * See {@link RenderWarning}.
+   */
+  warnings?: RenderWarning[];
 }
 
 /**
@@ -75,7 +94,7 @@ export interface RenderResult {
  * ```
  */
 export async function render(markdown: string, options?: RenderOptions): Promise<RenderResult> {
-  const { meta, content } = extractFrontmatter(markdown);
+  const { meta, content, error: frontmatterError } = extractFrontmatter(markdown);
   const baseTheme = resolveBaseTheme(meta.theme as string | undefined);
   const frontmatterOverrides = frontmatterToThemeOverrides(meta);
   const theme = mergeTheme({ ...options?.theme, ...frontmatterOverrides }, baseTheme);
@@ -103,5 +122,19 @@ export async function render(markdown: string, options?: RenderOptions): Promise
   });
   const text = toPlainText(parsedHtml);
 
-  return { html, text, meta: { ...meta } };
+  const warnings: RenderWarning[] = [];
+  if (frontmatterError) {
+    warnings.push({
+      stage: 'frontmatter',
+      message: frontmatterError.message,
+      cause: frontmatterError,
+    });
+  }
+
+  return {
+    html,
+    text,
+    meta: { ...meta },
+    ...(warnings.length > 0 ? { warnings } : {}),
+  };
 }

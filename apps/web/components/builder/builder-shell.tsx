@@ -10,6 +10,10 @@ import { useAutoSave } from "./use-auto-save";
 import { EditorPane } from "./editor-pane";
 import { OutputPane } from "./output-pane";
 
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 const DEFAULT_MARKDOWN = `---
 preheader: "Thanks for signing up."
 ---
@@ -86,7 +90,10 @@ export function BuilderShell({
           setHtml(pretty.html);
           setMinifiedHtml(minified.html);
           setText(pretty.text);
-          setRenderError(null);
+          const warning = pretty.warnings?.[0];
+          setRenderError(
+            warning ? `${capitalize(warning.stage)}: ${warning.message}` : null
+          );
         } catch (err) {
           if (cancelled) return;
           setRenderError(err instanceof Error ? err.message : String(err));

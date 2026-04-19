@@ -7,11 +7,12 @@ description: Complete API documentation for Email.md.
 
 Renders markdown to email-safe HTML. **Async** since v0.3.0 — returns a `Promise`.
 
-**Returns** `Promise<{ html, text, meta }>`
+**Returns** `Promise<{ html, text, meta, warnings? }>`
 
 - `html` — complete HTML email document
 - `text` — plain text version for the `text/plain` MIME part
 - `meta` — extracted frontmatter metadata
+- `warnings` — non-fatal issues encountered while rendering (e.g. invalid frontmatter YAML). Omitted when empty. See [`RenderWarning`](#renderwarning).
 
 ```typescript
 import { render } from "emailmd";
@@ -52,14 +53,34 @@ const { html, text, meta } = await render("# Hello");
   html: string;
   text: string;
   meta: { preheader?: string; [key: string]: unknown };
+  warnings?: RenderWarning[];
 }
 ```
 
-| Property | Type     | Description                       |
-| -------- | -------- | --------------------------------- |
-| `html`   | `string` | Complete email-safe HTML document |
-| `text`   | `string` | Plain text version                |
-| `meta`   | `object` | Extracted frontmatter metadata    |
+| Property   | Type               | Description                                                          |
+| ---------- | ------------------ | -------------------------------------------------------------------- |
+| `html`     | `string`           | Complete email-safe HTML document                                    |
+| `text`     | `string`           | Plain text version                                                   |
+| `meta`     | `object`           | Extracted frontmatter metadata                                       |
+| `warnings` | `RenderWarning[]?` | Non-fatal issues (e.g. invalid frontmatter YAML). Omitted when empty.|
+
+## `RenderWarning`
+
+```typescript
+{
+  stage: 'frontmatter';
+  message: string;
+  cause?: Error;
+}
+```
+
+| Property  | Type                        | Description                                          |
+| --------- | --------------------------- | ---------------------------------------------------- |
+| `stage`   | `'frontmatter'`             | Which render stage produced the warning              |
+| `message` | `string`                    | Human-readable message                               |
+| `cause`   | `Error?`                    | Original thrown error, when one is available         |
+
+When `render()` encounters an invalid frontmatter block, it returns empty `meta` and appends a warning instead of throwing. The `html`/`text` output still contains the rendered body, so UIs can keep the preview alive and surface the warning alongside it.
 
 ## `Theme`
 

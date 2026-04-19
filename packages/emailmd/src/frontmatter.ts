@@ -4,6 +4,8 @@ import type { Theme } from './theme.js';
 export interface FrontmatterResult {
   meta: Record<string, unknown>;
   content: string;
+  /** Present when the frontmatter block was found but could not be parsed as YAML. */
+  error?: Error;
 }
 
 const frontmatterRegex = /^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?([\s\S]*)$/;
@@ -41,14 +43,17 @@ export function extractFrontmatter(input: string): FrontmatterResult {
   if (!match) {
     return { meta: {}, content: input };
   }
-  let data: Record<string, unknown> = {};
   try {
-    data = (yaml.load(match[1]) as Record<string, unknown>) ?? {};
-  } catch {
+    const data = (yaml.load(match[1]) as Record<string, unknown>) ?? {};
+    return { meta: data, content: match[2] };
+  } catch (err) {
     // Invalid YAML — fall back to empty meta and keep rendering the body.
-    return { meta: {}, content: match[2] };
+    return {
+      meta: {},
+      content: match[2],
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
   }
-  return { meta: data, content: match[2] };
 }
 
 export function frontmatterToThemeOverrides(meta: Record<string, unknown>): Partial<Theme> {

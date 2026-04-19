@@ -19,15 +19,16 @@ preheader: Hello
     expect(content.trim()).toBe('# Just markdown');
   });
 
-  it('returns empty meta when frontmatter contains invalid YAML', async () => {
+  it('returns empty meta and an error when frontmatter contains invalid YAML', async () => {
     const input = `---
 button_text_color: "#09090b":smiley::100::grin:
 ---
 
 # Title`;
-    const { meta, content } = extractFrontmatter(input);
+    const { meta, content, error } = extractFrontmatter(input);
     expect(meta).toEqual({});
     expect(content.trim()).toBe('# Title');
+    expect(error).toBeInstanceOf(Error);
   });
 });
 
@@ -92,6 +93,26 @@ describe('frontmatterToThemeOverrides', async () => {
     const meta = { preheader: 'text', unknown_key: 'value' };
     const overrides = frontmatterToThemeOverrides(meta);
     expect(overrides).toEqual({});
+  });
+});
+
+describe('render() warnings', async () => {
+  it('surfaces invalid frontmatter as a warning without throwing', async () => {
+    const input = `---
+button_text_color: "#09090b":smiley::100::grin:
+---
+
+# Title`;
+    const result = await render(input);
+    expect(result.warnings).toHaveLength(1);
+    expect(result.warnings?.[0].stage).toBe('frontmatter');
+    expect(result.warnings?.[0].cause).toBeInstanceOf(Error);
+    expect(result.html).toContain('Title');
+  });
+
+  it('omits warnings when frontmatter parses cleanly', async () => {
+    const result = await render(`---\npreheader: Hi\n---\n\n# Ok`);
+    expect(result.warnings).toBeUndefined();
   });
 });
 
