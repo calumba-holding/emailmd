@@ -48,6 +48,7 @@ export function BuilderShell({
   const [html, setHtml] = useState("");
   const [minifiedHtml, setMinifiedHtml] = useState("");
   const [text, setText] = useState("");
+  const [renderError, setRenderError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(true);
   const [lastSaved, setLastSaved] = useState<number | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -85,8 +86,10 @@ export function BuilderShell({
           setHtml(pretty.html);
           setMinifiedHtml(minified.html);
           setText(pretty.text);
-        } catch {
-          // keep previous output on error
+          setRenderError(null);
+        } catch (err) {
+          if (cancelled) return;
+          setRenderError(err instanceof Error ? err.message : String(err));
         }
       })();
     }, 150);
@@ -136,7 +139,12 @@ export function BuilderShell({
       </div>
 
       {/* Output panel — always visible, full-width on mobile */}
-      <OutputPane html={html} minifiedHtml={minifiedHtml} text={text} />
+      <OutputPane
+        html={html}
+        minifiedHtml={minifiedHtml}
+        text={text}
+        error={renderError}
+      />
 
       {/* Mobile floating edit button */}
       {!editorOpen && (

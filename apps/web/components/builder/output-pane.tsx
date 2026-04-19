@@ -23,9 +23,10 @@ interface OutputPaneProps {
   html: string;
   minifiedHtml: string;
   text: string;
+  error?: string | null;
 }
 
-export function OutputPane({ html, minifiedHtml, text }: OutputPaneProps) {
+export function OutputPane({ html, minifiedHtml, text, error }: OutputPaneProps) {
   const [tab, setTab] = useState<Tab>("preview");
   const [mobile, setMobile] = useState(false);
   const [minified, setMinified] = useState(false);
@@ -42,6 +43,15 @@ export function OutputPane({ html, minifiedHtml, text }: OutputPaneProps) {
   return (
     <TooltipProvider delayDuration={300} skipDelayDuration={100}>
       <div className="flex flex-1 flex-col min-w-0">
+        {error && (
+          <div className="border-b border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+            <span className="font-medium">Render error:</span>{" "}
+            <span className="font-mono">{error}</span>{" "}
+            <span className="text-destructive/70">
+              — showing last successful output.
+            </span>
+          </div>
+        )}
         <div className="flex items-center border-b border-border bg-muted/30 px-1">
           {tabs.map((t) => (
             <button

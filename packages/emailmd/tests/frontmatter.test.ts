@@ -18,6 +18,17 @@ preheader: Hello
     expect(meta).toEqual({});
     expect(content.trim()).toBe('# Just markdown');
   });
+
+  it('returns empty meta when frontmatter contains invalid YAML', async () => {
+    const input = `---
+button_text_color: "#09090b":smiley::100::grin:
+---
+
+# Title`;
+    const { meta, content } = extractFrontmatter(input);
+    expect(meta).toEqual({});
+    expect(content.trim()).toBe('# Title');
+  });
 });
 
 describe('frontmatterToThemeOverrides', async () => {

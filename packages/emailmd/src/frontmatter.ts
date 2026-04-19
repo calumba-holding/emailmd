@@ -41,7 +41,13 @@ export function extractFrontmatter(input: string): FrontmatterResult {
   if (!match) {
     return { meta: {}, content: input };
   }
-  const data = (yaml.load(match[1]) as Record<string, unknown>) ?? {};
+  let data: Record<string, unknown> = {};
+  try {
+    data = (yaml.load(match[1]) as Record<string, unknown>) ?? {};
+  } catch {
+    // Invalid YAML — fall back to empty meta and keep rendering the body.
+    return { meta: {}, content: match[2] };
+  }
   return { meta: data, content: match[2] };
 }
 
