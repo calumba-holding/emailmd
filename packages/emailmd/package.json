@@ -1,6 +1,6 @@
 {
   "name": "emailmd",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Turn markdown into responsive, email-safe HTML that renders perfectly across every client.",
   "keywords": [
     "email",
@@ -63,8 +63,8 @@
     "markdown-it-sub": "^2.0.0",
     "markdown-it-sup": "^2.0.0",
     "markdown-it-task-lists": "^2.1.1",
-    "mjml": "^5.0.1",
-    "mjml-browser": "^5.0.1"
+    "mjml": "^5.2.1",
+    "mjml-browser": "^5.2.1"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
