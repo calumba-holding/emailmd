@@ -67,14 +67,14 @@ https://www.emailmd.dev/llms-full.txt
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an [issue](https://github.com/unmta/emailmd/issues) or submit a [pull request](https://github.com/unmta/emailmd/pulls).
+Contributions are welcome! Feel free to open an [issue](https://github.com/anypost/emailmd/issues) or submit a [pull request](https://github.com/anypost/emailmd/pulls).
 
 > Email.md is under active development. The API may change between minor versions until we hit 1.0.
 
 ## Acknowledgements
 
 - Built with [MJML](https://mjml.io) under the hood
-- Sponsored by [unMTA](https://www.unmta.com)
+- Sponsored by [Anypost](https://anypost.com/)
 
 ## License
 

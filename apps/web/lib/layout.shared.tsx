@@ -13,7 +13,7 @@ export function baseOptions(): BaseLayoutProps {
         </span>
       ),
     },
-    githubUrl: "https://github.com/unmta/emailmd",
+    githubUrl: "https://github.com/anypost/emailmd",
     links: [
       {
         text: "Templates",

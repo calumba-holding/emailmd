@@ -4,10 +4,25 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] — 2026-06-09
+
+### Changed
+- Project moved to the [Anypost](https://anypost.com/) GitHub org — the repository now lives at [anypost/emailmd](https://github.com/anypost/emailmd). Repository metadata and documentation links updated; no code changes.
+
+## [0.3.3] — 2026-05-29
+
+### Changed
+- Upgraded MJML to ^5.3.0.
+
+## [0.3.2] — 2026-05-13
+
+### Changed
+- Upgraded MJML to ^5.2.1.
+
 ## [0.3.1] — 2026-04-19
 
 ### Fixed
-- Invalid YAML in a frontmatter block no longer throws from `extractFrontmatter()` / `render()`. The body renders with empty meta, and the parse error is surfaced on the result instead ([#16](https://github.com/unmta/emailmd/issues/16)).
+- Invalid YAML in a frontmatter block no longer throws from `extractFrontmatter()` / `render()`. The body renders with empty meta, and the parse error is surfaced on the result instead ([#16](https://github.com/anypost/emailmd/issues/16)).
 
 ### Added
 - `FrontmatterResult.error?: Error` — set when a frontmatter block was detected but could not be parsed as YAML.
@@ -37,12 +52,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [0.2.1] — 2026-04-06
 
 ### Fixed
-- Border radius now applies correctly to elements rendered inside directive blocks ([#13](https://github.com/unmta/emailmd/issues/13)).
+- Border radius now applies correctly to elements rendered inside directive blocks ([#13](https://github.com/anypost/emailmd/issues/13)).
 
 ## [0.2.0] — 2026-04-03
 
 ### Added
-- Richer `border-radius` support across segments and directive blocks ([#12](https://github.com/unmta/emailmd/issues/12)).
+- Richer `border-radius` support across segments and directive blocks ([#12](https://github.com/anypost/emailmd/issues/12)).
 
 ## [0.1.5] — 2026-04-01
 
@@ -55,17 +70,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Updated docs and cleaned up internal constants.
 
 ### Added
-- Allow fallback-link text to be overridden, to support i18n ([#3](https://github.com/unmta/emailmd/pull/3)).
+- Allow fallback-link text to be overridden, to support i18n ([#3](https://github.com/anypost/emailmd/pull/3)).
 
 ### Fixed
-- Hero text color now respects the theme ([#9](https://github.com/unmta/emailmd/pull/9)).
-- Buttons inside segments render correctly ([#8](https://github.com/unmta/emailmd/pull/8)).
+- Hero text color now respects the theme ([#9](https://github.com/anypost/emailmd/pull/9)).
+- Buttons inside segments render correctly ([#8](https://github.com/anypost/emailmd/pull/8)).
 - Button-only edge cases in segments.
 
 ## [0.1.3] — 2026-03-26
 
 ### Added
-- Custom theme frontmatter for all button types ([#1](https://github.com/unmta/emailmd/issues/1)).
+- Custom theme frontmatter for all button types ([#1](https://github.com/anypost/emailmd/issues/1)).
 
 ## [0.1.2] and earlier — 2026-03-20 to 2026-03-24
 

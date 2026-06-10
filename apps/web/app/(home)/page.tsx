@@ -22,7 +22,7 @@ function NavButtons() {
         Docs
       </Link>
       <a
-        href="https://github.com/unmta/emailmd"
+        href="https://github.com/anypost/emailmd"
         target="_blank"
         className={btnClass}
       >

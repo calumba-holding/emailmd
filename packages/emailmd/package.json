@@ -1,6 +1,6 @@
 {
   "name": "emailmd",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Turn markdown into responsive, email-safe HTML that renders perfectly across every client.",
   "keywords": [
     "email",
@@ -14,8 +14,8 @@
   "license": "MIT",
   "author": "Dan Stevens",
   "homepage": "https://emailmd.dev",
-  "repository": "github:unmta/emailmd",
-  "bugs": "https://github.com/unmta/emailmd/issues",
+  "repository": "github:anypost/emailmd",
+  "bugs": "https://github.com/anypost/emailmd/issues",
   "bin": {
     "emailmd": "dist/cli.js"
   },
